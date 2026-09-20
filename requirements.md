@@ -299,7 +299,7 @@ Errors use RFC 7807 `application/problem+json` with a stable `code` field.
 ## 8. Architecture
 
 ```
-Angular 21 SPA (Vercel) ──HTTPS/JWT──►  Spring Boot 3.5 API (Render)  ──JDBC──►  Postgres 16 (Neon)
+Angular 21 SPA (Vercel) ──HTTPS/JWT──►  Spring Boot 3.5 API (Render)  ──JDBC──►  Postgres 18 (Neon)
   standalone components                    controller → service → repository
   Angular Material                         Flyway-managed schema
   typed HTTP client                        DTO boundary, no entity leakage
@@ -317,7 +317,7 @@ systems get slow.
 | Choice | Why | Alternative rejected |
 |---|---|---|
 | Java 17 + Spring Boot 3.5.3, Gradle | Java 17 is what is installed; Gradle is present, Maven is not. 3.5.3 is the current stable release, verified against Maven Central (ADR-0002) | — |
-| PostgreSQL 16 on Neon (free tier) | Real `NUMERIC`, window functions, `EXCLUDE` constraints, `percentile_cont` for medians, `JSONB` for audit. Free forever, no card | SQLite: weak typing, no native decimal, limited analytics SQL. H2: not production-grade |
+| PostgreSQL 18 on Neon (free tier) | Real `NUMERIC`, window functions, `EXCLUDE` constraints, `percentile_cont` for medians, `JSONB` for audit. Free forever, no card. (Planned as 16; Neon provisioned 18 by default — verified working, ADR-0007. Test engine pinned to 17.5, the newest Zonky/Flyway currently support.) | SQLite: weak typing, no native decimal, limited analytics SQL. H2: not production-grade |
 | Flyway | Versioned, reviewable schema; `ddl-auto` is banned (NFR-5) | Hibernate auto-DDL |
 | Angular 21.2 standalone + Angular Material | Brief specifies Angular for Java. Material gives an accessible data grid without hand-rolling a table. 21.2 rather than 22 because the installed Node 22.18 does not meet Angular 22's engine requirement (ADR-0002) | — |
 | JUnit 5 + AssertJ + Mockito | Fast unit tests with readable assertions | — |
@@ -376,6 +376,6 @@ it actually was.
 |---|---|
 | Analytics queries slow at 10k | Measure at M6 against the real seeded dataset; indexes and the current-salary view designed up front |
 | Render cold start damages the demo | Document it; warm the instance before recording the video |
-| `btree_gist` unavailable on Neon | Verified at M1. Fallback: service-level enforcement plus a unique partial index on `(employee_id) WHERE effective_to IS NULL`, with the limitation documented |
+| ~~`btree_gist` unavailable on Neon~~ **Resolved** | Verified on the embedded test engine at M1, and against the real Neon instance during M1 (ahead of the original M9 schedule) — all five migrations applied cleanly, `btree_gist` and `pg_trgm` both installed under the app's role. See ADR-0007. Fallback (service-level enforcement plus a unique partial index on `(employee_id) WHERE effective_to IS NULL`) is no longer needed and kept only as a documented alternative. |
 | Embedded Postgres slows the suite | Unit tests carry the bulk and need no database; the embedded instance starts once per run |
 | Scope creep from AI-generated extras | `CLAUDE.md` forbids unrequested features; the analyst review gate checks every change against a requirement ID |

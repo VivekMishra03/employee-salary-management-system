@@ -38,29 +38,33 @@ class SchemaMigrationTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    @DisplayName("ADR-0001: tests run on PostgreSQL 16, the same major version as production")
-    void database_isPostgres16() {
+    @DisplayName("ADR-0007: tests run on the newest PostgreSQL Zonky and Flyway currently support")
+    void database_isPostgres17() {
         // ADR-0001 chose embedded PostgreSQL over H2 on the grounds that tests must run against the
-        // same engine as production. That justification only holds if the version pin in
-        // build.gradle actually takes effect -- without it the suite silently runs on 14.15 and the
-        // ADR's central claim quietly becomes false.
+        // same engine as production. Live verification (ADR-0007) found Neon actually provisions
+        // PostgreSQL 18, not 16 as originally assumed; Zonky has no 18.x Windows binary yet, and
+        // 17.5.0 is also the newest version Flyway 11.7.2 declares official support for. 17.5.0 is
+        // therefore the closest match currently achievable, not an exact one -- the version pin in
+        // build.gradle is what makes that true, and this test is what stops it silently regressing
+        // to whatever Zonky's library default happens to be.
         String version = jdbcTemplate.queryForObject("SHOW server_version", String.class);
 
-        assertThat(version).as("engine reported by the embedded instance").startsWith("16.");
+        assertThat(version).as("engine reported by the embedded instance").startsWith("17.");
     }
 
     @Test
-    @DisplayName("NFR-5: Flyway applied V1, and no migration failed")
-    void flyway_appliedVersionOneSuccessfully() {
+    @DisplayName("NFR-5: Flyway applied every migration in order, and none failed")
+    void flyway_appliedAllMigrationsSuccessfully() {
         List<String> succeeded = jdbcTemplate.queryForList(
-                "SELECT version FROM flyway_schema_history WHERE success = true AND version IS NOT NULL",
+                "SELECT version FROM flyway_schema_history WHERE success = true AND version IS NOT NULL "
+                        + "ORDER BY installed_rank",
                 String.class);
         Integer failed = jdbcTemplate.queryForObject(
                 "SELECT count(*) FROM flyway_schema_history WHERE success = false", Integer.class);
 
-        // Asserting the specific version, not merely count(*) > 0, which would pass on any
-        // non-empty history and so would not actually check that our migration ran.
-        assertThat(succeeded).contains("1");
+        // Asserting the specific versions in order, not merely count(*) > 0, which would pass on
+        // any non-empty history and so would not actually check that our migrations ran.
+        assertThat(succeeded).containsExactly("1", "2", "3", "4", "5");
         assertThat(failed).as("a failed migration must never be left in the history").isZero();
     }
 
@@ -68,15 +72,19 @@ class SchemaMigrationTest {
     @DisplayName("NFR-5: Hibernate created no tables -- Flyway owns the schema exclusively")
     void hibernate_createdNoTables() {
         // ddl-auto: none is configuration, and configuration is not behaviour until something
-        // checks it. Flipping it to `update` would not fail any other test in this suite. Today no
-        // entities exist, so the schema must contain exactly Flyway's own bookkeeping table; as
-        // entities arrive in M1.2 this assertion keeps earning its place by proving every table
-        // present was created by a migration.
+        // checks it. Flipping it to `update` would not fail any other test in this suite.
+        //
+        // The expected list is maintained by hand rather than derived from the entity classes,
+        // deliberately: deriving it from JPA metadata would make this test pass even if ddl-auto
+        // silently started creating tables again, because Hibernate's own view of "what tables
+        // should exist" is exactly what this test must not trust. Every name below must trace to a
+        // Flyway migration (V2-V5 as of M1.3).
         List<String> tables = jdbcTemplate.queryForList(
                 "SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename",
                 String.class);
 
-        assertThat(tables).containsExactly("flyway_schema_history");
+        assertThat(tables).containsExactlyInAnyOrder(
+                "department", "employee", "flyway_schema_history", "job_role", "location");
     }
 
     @Test

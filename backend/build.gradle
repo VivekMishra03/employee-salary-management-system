@@ -40,8 +40,11 @@ dependencies {
     // "You have to add the following dependency: io.zonky.test:embedded-postgres" -- so it is
     // declared explicitly. This is the artifact that forks the actual postgres process.
     testImplementation 'io.zonky.test:embedded-postgres:2.1.0'
-    // Pins the PostgreSQL binary to the production major version rather than the library default.
-    testImplementation enforcedPlatform('io.zonky.test.postgres:embedded-postgres-binaries-bom:16.9.0')
+    // Pins the PostgreSQL binary as close to production as Zonky currently offers. Neon actually
+    // runs PostgreSQL 18 (discovered by live verification, ADR-0007); Zonky's newest Windows
+    // binary is 17.5.0, with no 18.x yet. 17.5.0 is also the newest version Flyway 11.7.2 declares
+    // official support for, so this is the closest match both toolchains currently permit.
+    testImplementation enforcedPlatform('io.zonky.test.postgres:embedded-postgres-binaries-bom:17.5.0')
 }
 
 tasks.named('test') {

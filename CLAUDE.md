@@ -15,7 +15,7 @@ Read `requirements.md` before doing anything. It is the specification. This file
 | **Building** | Salary management system for ACME — 10,000 employees, multiple countries |
 | **User** | A single HR Manager |
 | **Backend** | Java 17, Spring Boot 3.5.3, Gradle 8.5 wrapper (no Maven on this machine) |
-| **Database** | PostgreSQL 16, Flyway migrations, hosted on Neon (free tier) |
+| **Database** | PostgreSQL 18 on Neon (free tier), Flyway migrations. Test engine pinned to 17.5 -- see ADR-0007 |
 | **Frontend** | Angular 21.2 (standalone components) + Angular Material |
 | **Tests** | JUnit 5 + AssertJ 3.27.3 + Mockito; Zonky embedded Postgres 16.9 for repository tests |
 | **Deploy** | Render (API) · Vercel (SPA) · Neon (DB) |
