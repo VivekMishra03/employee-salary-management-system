@@ -1,4 +1,4 @@
-package com.acme.salary.persistence;
+package com.acme.salary.config;
 
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.DisplayName;

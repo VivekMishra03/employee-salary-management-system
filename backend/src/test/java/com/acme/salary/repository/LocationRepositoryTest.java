@@ -1,5 +1,6 @@
-package com.acme.salary.location;
+package com.acme.salary.repository;
 
+import com.acme.salary.model.Location;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.acme.salary.persistence;
+package com.acme.salary.config;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,15 @@
-package com.acme.salary.employee;
+package com.acme.salary.repository;
 
-import com.acme.salary.department.Department;
-import com.acme.salary.department.DepartmentRepository;
-import com.acme.salary.jobrole.JobRole;
-import com.acme.salary.jobrole.JobRoleRepository;
-import com.acme.salary.location.Location;
-import com.acme.salary.location.LocationRepository;
+import com.acme.salary.model.Employee;
+import com.acme.salary.model.EmploymentStatus;
+import com.acme.salary.model.EmploymentType;
+import com.acme.salary.model.Gender;
+import com.acme.salary.model.Department;
+import com.acme.salary.repository.DepartmentRepository;
+import com.acme.salary.model.JobRole;
+import com.acme.salary.repository.JobRoleRepository;
+import com.acme.salary.model.Location;
+import com.acme.salary.repository.LocationRepository;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

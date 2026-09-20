@@ -1,4 +1,4 @@
-package com.acme.salary.employee;
+package com.acme.salary.model;
 
 /**
  * requirements.md section 6.2. Drives the soft delete in FR-2.1 -- a TERMINATED employee is never

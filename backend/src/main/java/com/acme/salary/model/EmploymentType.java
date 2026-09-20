@@ -1,4 +1,4 @@
-package com.acme.salary.employee;
+package com.acme.salary.model;
 
 /** requirements.md section 6.2. */
 public enum EmploymentType {

@@ -1,4 +1,4 @@
-package com.acme.salary.location;
+package com.acme.salary.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

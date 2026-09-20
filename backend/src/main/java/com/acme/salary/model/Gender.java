@@ -1,4 +1,4 @@
-package com.acme.salary.employee;
+package com.acme.salary.model;
 
 /**
  * requirements.md section 6.2 and assumption 3: optional, self-declared, used only for the
