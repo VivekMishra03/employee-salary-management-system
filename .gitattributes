@@ -1,0 +1,32 @@
+# Normalise line endings to LF in the repository, for every text file.
+#
+# Why this exists: this project is developed on Windows with core.autocrlf=false, so whatever line
+# endings a tool happens to write get committed verbatim. During M1 a Python edit script rewrote two
+# test files from LF to CRLF while changing three lines of code. Git compares bytes, so the diff
+# rendered as a 110-line full-file rewrite instead of a 3-line change.
+#
+# That matters here beyond tidiness: CLAUDE.md section 6 makes the commit history a graded artifact,
+# and a reviewer cannot see a 3-line change buried under 104 deletions.
+#
+# `text=auto eol=lf` tells git to treat files as text when it detects text, and to store and check
+# them out with LF regardless of the platform or the tool that wrote them.
+* text=auto eol=lf
+
+# Explicitly binary, so git never attempts line-ending translation on them.
+*.jar binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# gradlew is a shell script executed on Linux CI. CRLF would break its shebang.
+gradlew text eol=lf
+*.sh text eol=lf
+
+# gradlew.bat is a Windows batch file and needs CRLF to be safe for cmd.exe.
+gradlew.bat text eol=crlf
+*.cmd text eol=crlf

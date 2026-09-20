@@ -25,14 +25,14 @@ The loop below is designed to make wrong turns surface within one task rather th
 └───────┬───────┘                                                      │
         ▼                                                              │
 ┌───────────────┐                                                      │
-│ 2. ANALYST    │  Fresh subagent. Reads requirements.md + the diff.    │
-│    GATE       │  "Is this what we specified — no less, no more?"     │
+│ SPEC          │  Fresh subagent. Reads requirements.md + the diff.    │
+│ COMPLIANCE    │  "Is this what we specified — no less, no more?"     │
 │    (always)   │                                                      │
 └───────┬───────┘                                                      │
         ▼                                                              │
 ┌───────────────┐                                                      │
-│ 3. QUALITY    │  Fresh subagent. Runs the tests itself.              │
-│    GATE       │  "Is this correct, tested, maintainable?"            │
+│ CODE          │  Fresh subagent. Runs the tests itself.              │
+│ CORRECTNESS   │  "Is this correct, tested, safe?"                    │
 │  (only if     │  Skipped when only deps/config/docs changed.         │
 │ source code   │                                                      │
 │   changed)    │                                                      │
@@ -68,9 +68,9 @@ Per `CLAUDE.md` §2. The non-negotiable part is that **the RED output is capture
 passed the first time is evidence that something is wrong — either it tests nothing, or the feature
 already existed and the task was misunderstood. Both are worth knowing before writing more code.
 
-## Stage 2 — Requirements analyst gate
+## Stage 2 — Spec compliance review
 
-A **fresh subagent** (`.claude/agents/requirements-analyst.md`) that did not write the code reads
+A **fresh subagent** (`.claude/agents/spec-compliance-review.md`) that did not write the code reads
 `requirements.md` and the diff from disk.
 
 Why a separate agent: the implementer has the intended design in context and will read the code as
@@ -80,9 +80,9 @@ defence against context poisoning — it resets the frame on every task.
 Catches: missing sub-requirements, untested acceptance criteria, invented features, out-of-scope work,
 contradictions with the spec.
 
-## Stage 3 — Code quality gate *(conditional)*
+## Stage 3 — Code correctness review *(conditional)*
 
-A second **fresh subagent** (`.claude/agents/code-quality-reviewer.md`). Runs the test suite itself
+A second **fresh subagent** (`.claude/agents/code-correctness-review.md`). Runs the test suite itself
 rather than trusting a claim, and looks for defects in correctness, money handling, test quality,
 security, layering and performance.
 
@@ -112,7 +112,7 @@ grep silently misses every file inside it, skipping the gate on exactly the larg
 need it. This was observed in M0.
 
 Any output means the gate is mandatory. No output means it is skipped, and the Stage 4 report must
-record `Quality gate: SKIPPED (no source-code files changed)` so the skip is a visible decision.
+record `Code correctness: SKIPPED (no source-code files changed)` so the skip is a visible decision.
 
 The rationale is signal-to-noise: this gate's value is in correctness, money handling and test
 quality, and those defects live in source code. Running it against a dependency bump or a YAML tweak
@@ -131,8 +131,8 @@ The human receives a short report — no code dumps:
 **Requirements:** FR-3.1, FR-3.2
 **Built:** <2–4 lines>
 **Tests:** 12 new, 47 total — all passing (output below)
-**Analyst gate:** PASS (1 gap found and fixed: back-dated case untested)
-**Quality gate:** APPROVE WITH COMMENTS (1 blocker fixed: unscaled BigDecimal divide)
+**Spec compliance:** PASS (1 gap found and fixed: back-dated case untested)
+**Code correctness:** APPROVE WITH COMMENTS (1 blocker fixed: unscaled BigDecimal divide)
 **Decisions needing your call:** <or "none">
 **Proposed commit:** feat(salary): ...
 ```

@@ -80,26 +80,41 @@ percentile maths · CSV row validation · JWT claims and expiry · filter-spec c
 
 ## 3. The review loop — no task is done when the code is written
 
-Gates 1, 2 and 4 run on **every** task. Gate 3 is **conditional** — see the trigger rule below.
+Implementation, spec compliance and human approval run on **every** task. The code correctness
+review is **conditional** — see the trigger rule below.
 Skipping a gate that applies is not permitted, including when the change looks trivial.
 
 ```
  ┌─────────────┐   ┌──────────────────────┐   ┌────────────────────┐   ┌──────────┐
- │ 1. IMPLEMENT│──►│ 2. REQUIREMENTS      │──►│ 3. CODE QUALITY    │──►│ 4. HUMAN │
- │    (TDD)    │   │    ANALYST review    │   │    review          │   │  approves│
- │             │   │    (always)          │   │ (only if *.java    │   │  approves│
- │             │   │                      │   │  changed)          │   │          │
+ │  IMPLEMENT  │──►│  SPEC COMPLIANCE     │──►│  CODE CORRECTNESS  │──►│  HUMAN   │
+ │    (TDD)    │   │  "what we specified, │   │  "correct, tested, │   │ approves │
+ │             │   │   no less, no more"  │   │   safe?"           │   │          │
+ │             │   │      (always)        │   │ (only if source    │   │          │
+ │             │   │                      │   │  code changed)     │   │          │
  └─────────────┘   └──────────┬───────────┘   └─────────┬──────────┘   └────┬─────┘
                               │ findings                │ findings          │
                               └────────► fix ◄──────────┘             commit & push
 ```
 
-### Gate 3 trigger rule
+### Keeping review cost down
 
-**Gate 3 runs if and only if the change touches at least one source-code file**, in either stack.
+These reviews run on every task, so their cost is paid repeatedly. Both agent definitions carry an
+explicit budget, and **the brief you send them is the main lever you control**:
+
+- **Name the `requirements.md` sections in scope.** The file is ~380 lines; a reviewer told to "check
+  the spec" reads all of it, every time.
+- **Keep the brief short.** State the task, the requirement IDs, what is out of scope, and at most
+  two things to probe hard. A brief with six sub-questions produces six investigations.
+- **Do not ask both reviews the same question.** They found the same defect independently on M1.1 —
+  that is one finding bought twice.
+- **Point at the changed files.** Do not make a reviewer discover scope it could be handed.
+
+### Code correctness trigger rule
+
+**The code correctness review runs if and only if the change touches at least one source-code file**, in either stack.
 Dependency manifests and configuration files do not count, however large the change.
 
-| Counts as code — Gate 3 **runs** | Does **not** count — Gate 3 **skips** |
+| Counts as code — review **runs** | Does **not** count — review **skips** |
 |---|---|
 | `backend/src/**/*.java` (production and test) | `build.gradle`, `settings.gradle`, `gradle-wrapper.properties` |
 | `frontend/src/**/*.ts` (including `*.spec.ts`) | `package.json`, `package-lock.json` |
@@ -120,30 +135,33 @@ CODE='^(backend/src/.*\.java|frontend/src/.*\.(ts|html|scss))$'
 ```
 
 **`-uall` is mandatory, not optional.** Without it `git status --porcelain` collapses a new
-untracked directory to a single entry such as `?? backend/`, the grep matches nothing, and Gate 3 is
-silently skipped for a change that added an entire Java package. This was observed in M0, where the
+untracked directory to a single entry such as `?? backend/`, the grep matches nothing, and the review
+is silently skipped for a change that added an entire Java package. This was observed in M0, where the
 naive form reported no code files while three existed.
 
-Any output means Gate 3 is **mandatory**. No output means it is **skipped**, and the human report
-must say so explicitly — `Quality gate: SKIPPED (no source-code files changed)` — so a skip is
+Any output means the review is **mandatory**. No output means it is **skipped**, and the human report
+must say so explicitly — `Code correctness: SKIPPED (no source-code files changed)` — so a skip is
 always a visible, justified decision rather than a silent omission.
 
 **Rationale.** This gate's findings are about correctness, money handling and test quality. Those
 defects live in source code. Pointing it at a dependency bump or a YAML edit produces padding rather
 than findings, and a reviewer that habitually reports nothing is one the team learns to ignore.
 
-**Gate 2 is never skipped.** A dependency or config change can still contradict the spec or smuggle
+**Spec compliance is never skipped.** A dependency or config change can still contradict the spec or smuggle
 in scope — and a dependency bump is exactly where unrequested scope tends to enter — which is
-precisely what Gate 2 exists to catch.
+precisely what the spec compliance review exists to catch.
 
-**Gate 2 — Requirements analyst** (`.claude/agents/requirements-analyst.md`). Answers only:
+**Spec compliance review** (`.claude/agents/spec-compliance-review.md`, model: sonnet). Answers only:
 does this implement what `requirements.md` specifies — no less, and *no more*? It hunts for missing
-acceptance criteria, silent scope creep, invented features, and contradictions with the spec. It does
-not comment on code style.
+acceptance criteria, silent scope creep, invented features, contradictions with the spec, and
+overclaims. It does not comment on code style. **Runs on every task.**
 
-**Gate 3 — Code quality reviewer** (`.claude/agents/code-quality-reviewer.md`), **when the trigger
-rule above fires**. Correctness, test quality, layering, money handling, security, naming. It does
-not re-litigate scope.
+**Code correctness review** (`.claude/agents/code-correctness-review.md`, model: opus), **when the
+trigger rule above fires**. Defects: correctness, money handling, test quality, security, layering.
+Mutation-tests the highest-value assertions. It does not re-litigate scope.
+
+The reviews are named for what they check, not for their position in a sequence — a review called
+"Gate 3" tells a reader nothing about what it will find.
 
 The two gates are separate agents on purpose: a single reviewer asked to check both reliably does
 neither well, and one that just wrote the code will not find its own blind spots. **Reviewers must be
@@ -281,8 +299,8 @@ A task is done only when **all** of these hold:
 - [ ] Behaviour traces to a requirement ID in `requirements.md`
 - [ ] Test written first and observed failing, then passing (both outputs shown)
 - [ ] Full suite green — output pasted, not summarised
-- [ ] Requirements-analyst gate passed
-- [ ] Code-quality gate passed
+- [ ] Spec compliance review passed
+- [ ] Code correctness review passed (or correctly skipped)
 - [ ] Findings fixed or explicitly accepted with a reason
 - [ ] No new warnings, dead code or TODOs without an owner
 - [ ] Docs/ADR updated if a decision was made

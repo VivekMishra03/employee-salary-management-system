@@ -23,8 +23,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
+    // M1 persistence. Flyway owns the schema; Hibernate ddl-auto is banned by NFR-5.
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    runtimeOnly 'org.postgresql:postgresql'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Repository tests run against a real PostgreSQL binary, not H2 (ADR-0001). Docker is not
+    // installed on this machine, so the Zonky provider -- which downloads and forks an actual
+    // postgres process -- is used instead of Testcontainers.
+    testImplementation 'io.zonky.test:embedded-database-spring-test:2.6.0'
+    // The Spring integration does not pull the provider transitively -- it fails at runtime with
+    // "You have to add the following dependency: io.zonky.test:embedded-postgres" -- so it is
+    // declared explicitly. This is the artifact that forks the actual postgres process.
+    testImplementation 'io.zonky.test:embedded-postgres:2.1.0'
+    // Pins the PostgreSQL binary to the production major version rather than the library default.
+    testImplementation enforcedPlatform('io.zonky.test.postgres:embedded-postgres-binaries-bom:16.9.0')
 }
 
 tasks.named('test') {

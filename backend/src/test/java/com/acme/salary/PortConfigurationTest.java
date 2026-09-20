@@ -1,11 +1,13 @@
 package com.acme.salary;
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 
+import static io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -25,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * proof that Render's PORT injection works is the M9 deploy returning 200, not a unit test.
  */
 @SpringBootTest(properties = "PORT=9999")
+@AutoConfigureEmbeddedDatabase(provider = ZONKY)
 class PortConfigurationTest {
 
     @Autowired

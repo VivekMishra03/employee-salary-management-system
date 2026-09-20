@@ -2,15 +2,32 @@ spring:
   application:
     name: salary-management
 
+  # NFR-4/NFR-6: no credentials are committed. These placeholders default to empty rather than to a
+  # working local connection string on purpose -- a committed default that happens to work is how a
+  # service ends up silently pointing at the wrong database. Unset means the application fails to
+  # start, which is the correct and loud outcome. Tests substitute an embedded PostgreSQL instance.
+  datasource:
+    url: ${DATABASE_URL:}
+    username: ${DATABASE_USERNAME:}
+    password: ${DATABASE_PASSWORD:}
+
+  jpa:
+    hibernate:
+      # NFR-5: Flyway owns the schema. Hibernate must never create, alter or validate it away.
+      ddl-auto: none
+    # Lazy loading must not leak into the HTTP layer; DTOs are assembled in the service (NFR-5).
+    open-in-view: false
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
 # NFR-6: twelve-factor configuration. Every environment-specific value arrives as an
 # environment variable, so the same artifact runs locally and on Render with no code change.
 # Render injects PORT at runtime; 8080 is the local development fallback.
 server:
   port: ${PORT:8080}
 
-# NFR-4: no credentials, connection strings or secrets are committed here. Datasource and
-# JWT configuration are introduced in M1/M2 and will read from the environment with no
-# working production default.
 # requirements.md:271 names /actuator/health as the only actuator route in the spec. Nothing
 # else is exposed: every unauthenticated endpoint is surface that M2 has to secure (NFR-4), so
 # it stays off until a requirement asks for it.
