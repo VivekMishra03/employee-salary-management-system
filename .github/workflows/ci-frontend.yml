@@ -1,0 +1,53 @@
+name: CI Frontend
+
+# Runs only when frontend code changes. A backend-only or docs-only push does not start this
+# workflow at all, so the two stacks build and fail independently despite sharing one repository
+# (see docs/adr/0005).
+#
+# The workflow file itself is in the path filter: a change to how the frontend is built must
+# re-verify the frontend.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ci-frontend.yml'
+
+jobs:
+  build:
+    name: Frontend (Angular 21)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.18.0'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Set up Chrome
+        # Karma drives a real browser (docs/adr/0004). Installed explicitly rather than relying on
+        # whatever the runner image happens to ship, so the suite does not break on an image update.
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: Unit tests
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+        run: npm test -- --watch=false --browsers=ChromeHeadlessCI
+
+      - name: Production build
+        run: npm run build -- --configuration production

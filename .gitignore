@@ -1,0 +1,43 @@
+# Java / Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+*.class
+*.jar
+!gradle-wrapper.jar
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+npm-debug.log*
+
+# Secrets - never commit (NFR-4)
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.properties
+*.pem
+*.key
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Test / build output
+coverage/
+*.log
+embedded-pg/
+
+# Claude local overrides
+.claude/settings.local.json

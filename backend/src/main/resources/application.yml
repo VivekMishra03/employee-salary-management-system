@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: salary-management
+
+# NFR-6: twelve-factor configuration. Every environment-specific value arrives as an
+# environment variable, so the same artifact runs locally and on Render with no code change.
+# Render injects PORT at runtime; 8080 is the local development fallback.
+server:
+  port: ${PORT:8080}
+
+# NFR-4: no credentials, connection strings or secrets are committed here. Datasource and
+# JWT configuration are introduced in M1/M2 and will read from the environment with no
+# working production default.
+# requirements.md:271 names /actuator/health as the only actuator route in the spec. Nothing
+# else is exposed: every unauthenticated endpoint is surface that M2 has to secure (NFR-4), so
+# it stays off until a requirement asks for it.
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

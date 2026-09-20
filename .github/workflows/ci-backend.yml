@@ -1,0 +1,56 @@
+name: CI Backend
+
+# Runs only when backend code changes. A frontend-only or docs-only push does not start this
+# workflow at all, so the two stacks build and fail independently despite sharing one repository
+# (see docs/adr/0005).
+#
+# The workflow file itself is in the path filter: a change to how the backend is built must
+# re-verify the backend.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/ci-backend.yml'
+
+jobs:
+  build:
+    name: Backend (Java 17)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          build-root-directory: backend
+
+      - name: Build and test
+        # Invoked via `sh` rather than `./gradlew` as belt-and-braces: this repo is developed on
+        # Windows where core.fileMode is false, so the executable bit on the wrapper depends on it
+        # having been staged with --chmod=+x. If that is ever lost, this step still runs instead of
+        # failing with "Permission denied" before a single test executes.
+        run: sh gradlew build --no-daemon
+
+      - name: Publish test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: |
+            backend/build/reports/tests/test
+            backend/build/reports/jacoco/test/html
