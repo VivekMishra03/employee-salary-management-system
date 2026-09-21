@@ -1,5 +1,7 @@
 package com.acme.salary;
 
+import com.acme.salary.model.AppUserRole;
+import com.acme.salary.service.JwtService;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +40,9 @@ class SalaryManagementApplicationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private JwtService jwtService;
+
     @Test
     @DisplayName("M0 exit criterion: the Spring application context loads")
     void applicationContext_loads() {
@@ -60,10 +65,18 @@ class SalaryManagementApplicationTest {
     }
 
     @Test
-    @DisplayName("M0: no endpoint beyond health is exposed")
+    @DisplayName("M0: no actuator endpoint beyond health is exposed, even to an authenticated caller")
     void actuator_exposesHealthOnly() throws Exception {
-        // Keeps the unauthenticated surface minimal for NFR-4. /actuator/info is not in the
-        // spec (requirements.md:271), so it must stay off until a requirement asks for it.
-        mockMvc.perform(get("/actuator/info")).andExpect(status().isNotFound());
+        // Keeps the surface minimal for NFR-4. /actuator/info is not in the spec
+        // (requirements.md:271), so it must stay off until a requirement asks for it.
+        //
+        // Since M2 an unauthenticated request to /actuator/info is a 401 whether or not the endpoint
+        // exists, so that alone no longer proves it is switched off. Authenticating first makes the
+        // 404 mean "not exposed" rather than merely "not visible to you".
+        String token = jwtService.issue(1L, "hr.manager@acme.example", AppUserRole.HR_MANAGER).token();
+
+        mockMvc.perform(get("/actuator/info").header("Authorization", "Bearer " + token))
+                .andExpect(status().isNotFound());
+        mockMvc.perform(get("/actuator/info")).andExpect(status().isUnauthorized());
     }
 }
