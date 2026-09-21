@@ -11,6 +11,14 @@ spring:
     username: ${DATABASE_USERNAME:}
     password: ${DATABASE_PASSWORD:}
 
+  data:
+    web:
+      pageable:
+        # FR-2.2: the client must never be able to receive the full dataset. Spring silently caps a
+        # larger requested size at max-page-size.
+        default-page-size: 20
+        max-page-size: 100
+
   jpa:
     hibernate:
       # NFR-5: Flyway owns the schema. Hibernate must never create, alter or validate it away.

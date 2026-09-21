@@ -6,6 +6,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
@@ -40,9 +42,64 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return problem;
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleNotFound(ResourceNotFoundException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problem.setTitle("Not Found");
+        problem.setProperty("code", "NOT_FOUND");
+        return problem;
+    }
+
+    /** 409 for every {@link ConflictException} subtype; the exception supplies the stable code. */
+    @ExceptionHandler(ConflictException.class)
+    public ProblemDetail handleConflict(ConflictException e) {
+        return conflict(e.getCode(), e.getMessage());
+    }
+
+    /**
+     * FR-2.6: the race the explicit version check cannot see -- two requests that both passed it and
+     * collide at flush. Reported exactly like the explicit check, so a client handles one case.
+     */
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ProblemDetail handleOptimisticLock(OptimisticLockingFailureException e) {
+        return conflict(ConcurrentUpdateException.CODE, new ConcurrentUpdateException().getMessage());
+    }
+
+    /**
+     * Backstop for a database constraint the service did not anticipate (or lost a race on). The
+     * detail is fixed: the driver's message names the constraint and quotes the conflicting value,
+     * which is schema detail and possibly personal data. Only the exception type is logged.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleDataIntegrity(DataIntegrityViolationException e) {
+        log.warn("Data integrity violation ({})", e.getMostSpecificCause().getClass().getSimpleName());
+        return conflict("DATA_INTEGRITY_VIOLATION", "The request conflicts with existing data");
+    }
+
+    @ExceptionHandler(RequestValidationException.class)
+    public ProblemDetail handleRequestValidation(RequestValidationException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problem.setTitle("Bad Request");
+        problem.setProperty("code", e.getCode());
+        if (e.getField() != null) {
+            problem.setProperty("errors", List.of(Map.of("field", e.getField(), "message", e.getMessage())));
+        }
+        return problem;
+    }
+
+    private static ProblemDetail conflict(String code, String detail) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, detail);
+        problem.setTitle("Conflict");
+        problem.setProperty("code", code);
+        return problem;
+    }
+
     /**
      * Reports which fields failed and why, and deliberately never the rejected value: the field
      * might be a password, and problem responses are logged and cached by intermediaries (NFR-4).
+     *
+     * <p>A binding failure (e.g. {@code status=BANANA} for an enum) gets a fixed message: Spring's
+     * own text quotes the rejected value and internal class names.
      */
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -50,7 +107,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   WebRequest request) {
         List<Map<String, String>> errors = ex.getBindingResult().getFieldErrors().stream()
                 .map(fe -> Map.of("field", fe.getField(), "message",
-                        fe.getDefaultMessage() == null ? "is invalid" : fe.getDefaultMessage()))
+                        fe.isBindingFailure() || fe.getDefaultMessage() == null
+                                ? "has an invalid value" : fe.getDefaultMessage()))
                 .toList();
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, "Request validation failed");
         problem.setTitle("Bad Request");

@@ -8,6 +8,7 @@ import com.acme.salary.model.EmploymentType;
 import com.acme.salary.model.Gender;
 import com.acme.salary.model.JobRole;
 import com.acme.salary.model.Location;
+import com.acme.salary.service.EmployeeSpecifications;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
