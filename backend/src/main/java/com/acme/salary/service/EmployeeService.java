@@ -258,13 +258,13 @@ public class EmployeeService {
         SalarySummary current = history.stream()
                 .filter(r -> !r.getEffectiveFrom().isAfter(today)
                         && (r.getEffectiveTo() == null || today.isBefore(r.getEffectiveTo())))
-                .findFirst().map(EmployeeService::salarySummary).orElse(null);
+                .findFirst().map(SalaryMapper::toSummary).orElse(null);
 
         return new EmployeeDetail(e.getId(), e.getEmployeeCode(), e.getFirstName(), e.getLastName(), e.getEmail(),
                 e.getGender(), e.getHireDate(), e.getTerminationDate(), e.getEmploymentStatus(),
                 e.getEmploymentType(), e.getFteRatio(), department.getId(), department.getName(), role.getId(),
                 role.getTitle(), role.getJobLevel(), location.getId(), location.getCity(), location.getCountryCode(),
-                manager, reports, current, history.stream().map(EmployeeService::salarySummary).toList(),
+                manager, reports, current, history.stream().map(SalaryMapper::toSummary).toList(),
                 e.getVersion(), e.getCreatedAt(), e.getUpdatedAt());
     }
 
@@ -293,11 +293,5 @@ public class EmployeeService {
 
     private static PersonRef personRef(Employee e) {
         return new PersonRef(e.getId(), e.getEmployeeCode(), e.getFirstName() + " " + e.getLastName());
-    }
-
-    private static SalarySummary salarySummary(SalaryRecord r) {
-        return new SalarySummary(r.getId(), r.getEffectiveFrom(), r.getEffectiveTo(), r.getBaseAmount(),
-                r.getCurrencyCode(), r.getPayFrequency(), r.getAnnualisedAmount(), r.getAnnualisedAmountBaseCcy(),
-                r.getTargetBonusPct(), r.getChangeReason(), r.getNotes());
     }
 }

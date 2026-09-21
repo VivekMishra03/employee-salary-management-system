@@ -1,0 +1,54 @@
+# Render Blueprint for the backend API (requirements.md M9; ADR-0005 monorepo, ADR-0001 hosting).
+# Field names verified against https://render.com/docs/blueprint-spec and /docs/monorepo-support.
+#
+# The frontend deploys separately to Vercel, and the database is Neon -- neither is defined here.
+services:
+  - type: web
+    name: salary-management-api
+    runtime: docker
+    plan: free
+    # The Neon project is in us-east-2 (Ohio); the same region keeps database round trips short.
+    region: ohio
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    # The one route that is deliberately unauthenticated (FR-1.2).
+    healthCheckPath: /actuator/health
+    autoDeployTrigger: commit
+    # ADR-0005: one repo, independent pipelines. Build filter paths are relative to the REPO root,
+    # so a frontend-only or docs-only push does not redeploy the API.
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+
+    envVars:
+      # --- Database (Neon). No value is committed: Render prompts for each on first sync. ---------
+      # DATABASE_URL must be the JDBC form WITHOUT credentials:
+      #   jdbc:postgresql://<neon-pooler-host>/<db>?sslmode=require&channel_binding=require
+      # (not the postgresql:// string Neon displays -- see .env.example).
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_USERNAME
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+
+      # --- Authentication (ADR-0009) -------------------------------------------------------------
+      # Render generates a random base64-encoded 256-bit value once, at creation. That is 44
+      # characters, above the 32 the application requires, and it is never in the repository.
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRY_MINUTES
+        value: "60"
+
+      # --- Compensation (ADR-0011) ---------------------------------------------------------------
+      - key: BASE_CURRENCY
+        value: USD
+
+      # --- JVM -----------------------------------------------------------------------------------
+      # The free plan has 512 MB. Container-aware sizing keeps the heap inside that limit rather
+      # than the JVM's default fraction, leaving room for metaspace and thread stacks.
+      - key: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=75"
+
+      # PORT is deliberately absent: Render injects it and the app reads it (server.port: ${PORT:8080}).

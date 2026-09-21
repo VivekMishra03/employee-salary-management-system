@@ -1,0 +1,9 @@
+# Keep the build context small and never ship local build output or IDE state into the image.
+build
+.gradle
+.idea
+*.iml
+*.log
+# Defence in depth: local secrets must not reach a build context even if one is created by mistake.
+.env
+.env.*

@@ -73,3 +73,10 @@ tasks.named('jacocoTestReport') {
         html.required = true
     }
 }
+
+// M9 deployment: a fixed artifact name so the Dockerfile can copy it without a wildcard. Spring
+// Boot also emits a "-plain.jar" (no dependencies) next to the executable jar, and a wildcard such
+// as build/libs/*.jar would match both.
+tasks.named('bootJar') {
+    archiveFileName = 'app.jar'
+}

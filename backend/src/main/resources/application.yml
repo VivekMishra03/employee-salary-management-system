@@ -39,6 +39,9 @@ app:
     jwt:
       secret: ${JWT_SECRET:}
       expiry-minutes: ${JWT_EXPIRY_MINUTES:60}
+  # requirements.md assumption 1: one configurable base reporting currency. Not a secret.
+  compensation:
+    base-currency: ${BASE_CURRENCY:USD}
 
 # NFR-6: twelve-factor configuration. Every environment-specific value arrives as an
 # environment variable, so the same artifact runs locally and on Render with no code change.
