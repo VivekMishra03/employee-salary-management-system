@@ -64,7 +64,7 @@ class SchemaMigrationTest {
 
         // Asserting the specific versions in order, not merely count(*) > 0, which would pass on
         // any non-empty history and so would not actually check that our migrations ran.
-        assertThat(succeeded).containsExactly("1", "2", "3", "4", "5", "6", "7");
+        assertThat(succeeded).containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12");
         assertThat(failed).as("a failed migration must never be left in the history").isZero();
     }
 
@@ -78,14 +78,14 @@ class SchemaMigrationTest {
         // deliberately: deriving it from JPA metadata would make this test pass even if ddl-auto
         // silently started creating tables again, because Hibernate's own view of "what tables
         // should exist" is exactly what this test must not trust. Every name below must trace to a
-        // Flyway migration (V2-V7 as of M1.4).
+        // Flyway migration (V2-V12 as of M1.5).
         List<String> tables = jdbcTemplate.queryForList(
                 "SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename",
                 String.class);
 
         assertThat(tables).containsExactlyInAnyOrder(
-                "app_user", "department", "employee", "flyway_schema_history", "job_role", "location",
-                "salary_record");
+                "app_user", "audit_log", "department", "employee", "exchange_rate", "flyway_schema_history",
+                "import_error", "import_job", "job_role", "location", "pay_band", "salary_record");
     }
 
     @Test
