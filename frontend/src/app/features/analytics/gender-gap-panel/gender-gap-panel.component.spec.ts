@@ -5,6 +5,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { GenderGapPanelComponent } from './gender-gap-panel.component';
 import { AnalyticsFilter, GenderGapStat } from '../../../core/models/analytics.model';
 import { genderGaps } from '../../../../testing/fixtures';
+import { asRgb, paletteVar } from '../../../../testing/palette';
 
 describe('GenderGapPanelComponent', () => {
   let fixture: ComponentFixture<GenderGapPanelComponent>;
@@ -135,5 +136,14 @@ describe('GenderGapPanelComponent', () => {
 
     expect(el().querySelector('[role="alert"]')?.textContent).toContain('groupBy must be DEPARTMENT or JOB_LEVEL');
     expect(el().querySelector('table.gaps')).toBeNull();
+  });
+
+  // Look and feel: a pay gap is not a good or bad number, so its sign carries no colour judgement.
+  it('gap figures are the ordinary text colour whether the gap is positive or negative', async () => {
+    await open();
+
+    const colours = Array.from(el().querySelectorAll<HTMLElement>('.gap-value')).map(v => getComputedStyle(v).color);
+    expect(text(el().querySelectorAll('.gap-value'))).toEqual(['+4.25%', '-3.10%']);
+    expect(colours).toEqual([asRgb(paletteVar('--acme-text')), asRgb(paletteVar('--acme-text'))]);
   });
 });

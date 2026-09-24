@@ -8,6 +8,7 @@ import { AnalyticsFilter } from '../../../core/models/analytics.model';
 import { IsoDateAdapter } from '../../../core/util/iso-date-adapter';
 import { TODAY } from '../../../core/util/today';
 import { trendPoints } from '../../../../testing/fixtures';
+import { asRgb, paletteVar } from '../../../../testing/palette';
 
 const day = (y: number, m: number, d: number): Date => new Date(y, m - 1, d);
 
@@ -370,5 +371,17 @@ describe('TrendPanelComponent', () => {
     await settle();
 
     expect(el().querySelector('table.trend thead')?.textContent).toContain('USD');
+  });
+
+  // Look and feel: the two series must be told apart by colour as well as by their headings and axes.
+  it('the payroll line and the increase line are drawn in two different palette colours', async () => {
+    await open();
+    await settle();
+
+    const stroke = (chart: HTMLElement): string =>
+      getComputedStyle(chart.querySelector('path.series') as SVGPathElement).stroke;
+    expect(charts().map(stroke)).toEqual([
+      asRgb(paletteVar('--acme-series-payroll')), asRgb(paletteVar('--acme-series-increase')),
+    ]);
   });
 });

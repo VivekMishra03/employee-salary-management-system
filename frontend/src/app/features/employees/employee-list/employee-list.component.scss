@@ -14,11 +14,25 @@
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--acme-surface);
   margin-bottom: 8px;
 }
 
+// The label is short ("Search") because the field must never be narrower than its own label; the
+// words that say what it searches live in the placeholder and the aria-label instead.
 .filter-search {
-  min-width: 240px;
+  flex: 1 1 260px;
+  min-width: 260px;
+  max-width: 420px;
+
+  // A long search ends in an ellipsis and stops short of the icon rather than running under it.
+  input {
+    box-sizing: border-box; // Material sets width:100% on a content-box, so padding alone would push it under the icon
+    padding-right: 8px;
+    text-overflow: ellipsis;
+  }
 }
 
 .filter {
@@ -33,28 +47,11 @@ table {
   cursor: pointer;
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--acme-tint-blue);
   }
 }
 
 .no-data {
   text-align: center;
   padding: 32px;
-}
-
-.status-chip {
-  &[data-status='ACTIVE'] {
-    background: #e6f4ea;
-    color: #1e6b34;
-  }
-
-  &[data-status='ON_LEAVE'] {
-    background: #fff4e0;
-    color: #8a5300;
-  }
-
-  &[data-status='TERMINATED'] {
-    background: #fdeaea;
-    color: #a12222;
-  }
 }

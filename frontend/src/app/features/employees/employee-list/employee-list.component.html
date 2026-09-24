@@ -7,8 +7,9 @@
 
 <div class="filters">
   <mat-form-field appearance="outline" class="filter-search">
-    <mat-label>Search name, code or email</mat-label>
-    <input id="emp-search" matInput [formControl]="searchCtrl" />
+    <mat-label>Search</mat-label>
+    <input id="emp-search" matInput [formControl]="searchCtrl" placeholder="Name, code or email"
+           aria-label="Search by name, employee code or email" />
     <mat-icon matSuffix>search</mat-icon>
   </mat-form-field>
 

@@ -1,5 +1,9 @@
 @use '../panel';
 
+:host {
+  --panel-accent: var(--acme-accent-teal);
+}
+
 .groups {
   width: 100%;
   margin-top: 16px;
@@ -9,7 +13,7 @@
   th,
   td {
     padding: 6px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid var(--acme-border);
     text-align: right;
     font-variant-numeric: tabular-nums;
   }
@@ -20,6 +24,6 @@
 
   thead th {
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
   }
 }

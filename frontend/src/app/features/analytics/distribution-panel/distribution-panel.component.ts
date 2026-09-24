@@ -4,6 +4,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { filter, map } from 'rxjs';
 import { AnalyticsFilter } from '../../../core/models/analytics.model';
@@ -21,7 +22,7 @@ const DEFAULT_BUCKETS = 12;
 /** FR-4.3: salary histogram, drawn as one bar per bucket; the bucketing itself is the server's. */
 @Component({
   selector: 'app-distribution-panel',
-  imports: [ReactiveFormsModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressBarModule, BarChartComponent],
+  imports: [ReactiveFormsModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, MatProgressBarModule, BarChartComponent],
   templateUrl: './distribution-panel.component.html',
   styleUrl: './distribution-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

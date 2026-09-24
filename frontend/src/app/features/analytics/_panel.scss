@@ -1,25 +1,33 @@
 // Shared by every dashboard panel: one card look, one way to show an error or an empty result.
+// Each panel sets --panel-accent on its host; the top border and the title icon both use it.
 :host {
   display: block;
 }
 
 .panel {
   height: 100%;
+  border-top: 4px solid var(--panel-accent, var(--acme-accent-blue));
+}
+
+.panel-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+  color: var(--panel-accent, var(--acme-accent-blue));
 }
 
 .panel-note,
 .panel-empty {
   margin: 8px 0;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
   font-size: 13px;
 }
 
 .panel-error {
   margin: 8px 0;
   padding: 8px 12px;
-  border-left: 4px solid #a12222;
-  background: #fdeaea;
-  color: #a12222;
+  border-left: 4px solid var(--acme-danger);
+  background: var(--acme-danger-bg);
+  color: var(--acme-danger);
 }
 
 .panel-controls {

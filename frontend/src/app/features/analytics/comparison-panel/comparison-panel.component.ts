@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnalyticsFilter, GroupBy } from '../../../core/models/analytics.model';
 import { MoneyPipe } from '../../../core/pipes/money.pipe';
@@ -11,7 +12,7 @@ import { panelState } from '../panel-state';
 /** FR-4.2: median pay per department, country or job level, with headcount. The server does the grouping. */
 @Component({
   selector: 'app-comparison-panel',
-  imports: [MatButtonToggleModule, MatCardModule, MatProgressBarModule, MoneyPipe, BarChartComponent],
+  imports: [MatButtonToggleModule, MatCardModule, MatIconModule, MatProgressBarModule, MoneyPipe, BarChartComponent],
   templateUrl: './comparison-panel.component.html',
   styleUrl: './comparison-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

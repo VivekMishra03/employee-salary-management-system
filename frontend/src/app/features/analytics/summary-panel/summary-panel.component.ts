@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnalyticsFilter } from '../../../core/models/analytics.model';
 import { MoneyPipe } from '../../../core/pipes/money.pipe';
@@ -20,7 +21,7 @@ const FIGURES: readonly { key: MoneyFigure; label: string }[] = [
 /** FR-4.1: headcount, payroll and pay statistics for the filtered slice; all figures are computed by the server. */
 @Component({
   selector: 'app-summary-panel',
-  imports: [MatCardModule, MatProgressBarModule, MoneyPipe],
+  imports: [MatCardModule, MatIconModule, MatProgressBarModule, MoneyPipe],
   templateUrl: './summary-panel.component.html',
   styleUrl: './summary-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

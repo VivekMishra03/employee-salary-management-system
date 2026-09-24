@@ -3,10 +3,24 @@
   flex-wrap: wrap;
   gap: 12px;
   align-items: center;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--acme-surface);
 }
 
+// The label is short ("Search") because the field must never be narrower than its own label; the
+// words that say what it searches live in the placeholder and the aria-label instead.
 .filter-search {
-  min-width: 240px;
+  flex: 1 1 260px;
+  min-width: 260px;
+  max-width: 420px;
+
+  // A long search ends in an ellipsis and stops short of the icon rather than running under it.
+  input {
+    box-sizing: border-box; // Material sets width:100% on a content-box, so padding alone would push it under the icon
+    padding-right: 8px;
+    text-overflow: ellipsis;
+  }
 }
 
 .filter {
@@ -14,5 +28,5 @@
 }
 
 .filter-status {
-  min-width: 220px;
+  min-width: 280px;
 }

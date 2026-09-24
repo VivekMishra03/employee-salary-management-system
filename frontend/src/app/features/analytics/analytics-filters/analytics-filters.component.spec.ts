@@ -5,6 +5,7 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { AnalyticsFiltersComponent } from './analytics-filters.component';
 import { AnalyticsFilter } from '../../../core/models/analytics.model';
 import { DEPARTMENTS, JOB_ROLES, LOCATIONS } from '../../../../testing/fixtures';
+import { setHostWidth, textRightEdge } from '../../../../testing/layout';
 
 describe('AnalyticsFiltersComponent', () => {
   let fixture: ComponentFixture<AnalyticsFiltersComponent>;
@@ -48,7 +49,7 @@ describe('AnalyticsFiltersComponent', () => {
 
   it('FR-4.7: the six filters are search, department, country, status, type and level', () => {
     const labels = Array.from(el().querySelectorAll('mat-label')).map(l => l.textContent?.trim());
-    expect(labels).toEqual(['Search name, code or email', 'Department', 'Country', 'Status', 'Type', 'Level']);
+    expect(labels).toEqual(['Search', 'Department', 'Country', 'Status', 'Type', 'Level']);
   });
 
   it('FR-4.7: department, country, type and level apply at once and combine', () => {
@@ -131,5 +132,56 @@ describe('AnalyticsFiltersComponent', () => {
     component.statusCtrl.setValue('DEFAULT');
 
     expect(emitted).toEqual([{ status: 'ACTIVE' }, {}]);
+  });
+
+  it('FR-4.7: the search field is labelled "Search", shows the fields it covers as a placeholder, and names them for assistive technology', () => {
+    const input = el().querySelector('#analytics-search') as HTMLInputElement;
+
+    expect(input.placeholder).toBe('Name, code or email');
+    expect(input.getAttribute('aria-label')).toBe('Search by name, employee code or email');
+  });
+
+  describe('layout in a real browser', () => {
+    const searchField = (): HTMLElement => el().querySelector('.filter-search') as HTMLElement;
+    const icon = (): HTMLElement => searchField().querySelector('.mat-mdc-form-field-icon-suffix mat-icon') as HTMLElement;
+
+    for (const width of [1280, 360]) {
+      it(`FR-4.7: at ${width}px the search label ends before the search icon instead of running under it`, () => {
+        setHostWidth(fixture, width);
+        const label = searchField().querySelector('label.mdc-floating-label') as HTMLElement;
+
+        expect(textRightEdge(label)).toBeLessThanOrEqual(icon().getBoundingClientRect().left);
+      });
+
+      // The value text is an inline element, so scrollWidth/clientWidth are always 0 for it; the text's
+      // own painted extent against the dropdown arrow is what shows whether the words are cut off.
+      it(`FR-4.7: at ${width}px the Status select shows its whole default text, ending before the dropdown arrow`, () => {
+        setHostWidth(fixture, width);
+        const text = el().querySelector('#filter-status .mat-mdc-select-value-text') as HTMLElement;
+        const arrow = el().querySelector('#filter-status .mat-mdc-select-arrow-wrapper') as HTMLElement;
+
+        expect(text.textContent?.trim()).toBe('Active + on leave (default)');
+        expect(textRightEdge(text)).toBeLessThanOrEqual(arrow.getBoundingClientRect().left);
+      });
+    }
+
+    it('FR-4.7: the search input padding and box sizing do not push its box under the search icon', () => {
+      setHostWidth(fixture, 360);
+      const input = el().querySelector('#analytics-search') as HTMLInputElement;
+
+      expect(input.getBoundingClientRect().right).toBeLessThanOrEqual(icon().getBoundingClientRect().left);
+    });
+
+    it('FR-4.7: a 60-character search overflows the input, is clipped with an ellipsis, and the clip edge stays clear of the search icon', () => {
+      setHostWidth(fixture, 360);
+      const input = el().querySelector('#analytics-search') as HTMLInputElement;
+      input.value = 'x'.repeat(60);
+      const style = getComputedStyle(input);
+      const clipEdge = input.getBoundingClientRect().right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
+
+      expect(input.scrollWidth).toBeGreaterThan(input.clientWidth);
+      expect(style.textOverflow).toBe('ellipsis');
+      expect(icon().getBoundingClientRect().left - clipEdge).toBeGreaterThanOrEqual(8);
+    });
   });
 });

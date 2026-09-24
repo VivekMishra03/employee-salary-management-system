@@ -1,5 +1,106 @@
 @use '@angular/material' as mat;
 
+// The palette, defined once. Component styles read these custom properties and never repeat a hex code, and
+// src/app/shared/theme/palette.spec.ts reads them back to prove every text/background pair meets WCAG AA.
+// Colour is only ever a second signal: chips, counts and captions keep their text.
+:root {
+  // Ramps. Blue for the brand and the page, slate for greys and text.
+  --acme-blue-200: #c3d9f5;
+  --acme-blue-700: #1b56a5;
+  --acme-blue-900: #0d2c5a;
+  --acme-slate-50: #f3f5f8;
+  --acme-slate-100: #e6eaf0;
+  --acme-slate-200: #d3dae4;
+  --acme-slate-600: #4a5668;
+  --acme-slate-900: #1b2431;
+
+  // Text, surfaces and links.
+  --acme-surface: #ffffff;
+  --acme-text: var(--acme-slate-900);
+  --acme-text-muted: var(--acme-slate-600);
+  --acme-link: var(--acme-blue-700);
+  --acme-border: var(--acme-slate-200);
+
+  // Page background (a soft blue fading to grey) and the deeper blue toolbar.
+  --acme-page-start: var(--acme-blue-200);
+  --acme-page-mid: var(--acme-slate-100);
+  --acme-page-end: var(--acme-slate-50);
+  --acme-page-gradient: linear-gradient(135deg, var(--acme-page-start), var(--acme-page-mid) 55%, var(--acme-page-end));
+  --acme-toolbar-start: var(--acme-blue-900);
+  --acme-toolbar-end: var(--acme-blue-700);
+  --acme-toolbar-text: #ffffff;
+  --acme-toolbar-gradient: linear-gradient(90deg, var(--acme-toolbar-start), var(--acme-toolbar-end));
+
+  // One accent per dashboard panel (a top border and an icon). Slate is the gender panel's: it is deliberately neutral.
+  --acme-accent-blue: var(--acme-blue-700);
+  --acme-accent-teal: #00796b;
+  --acme-accent-violet: #6b46c1;
+  --acme-accent-amber: #b45f06;
+  --acme-accent-slate: var(--acme-slate-600);
+  --acme-accent-cyan: #0b7285;
+
+  // Light tints behind the summary stat cards.
+  --acme-tint-blue: #e8f0fb;
+  --acme-tint-teal: #e0f2ef;
+  --acme-tint-violet: #ede8f9;
+  --acme-tint-slate: #e9edf3;
+
+  // Semantic tones: a strong colour for text and borders, and its light background, for chips and notices.
+  --acme-below: #7a4300;
+  --acme-below-bg: #fdf0d5;
+  --acme-within: #1b5e2f;
+  --acme-within-bg: #e2f4e7;
+  --acme-above: #123f80;
+  --acme-above-bg: #dde9fa;
+  --acme-no-band: #3a4556;
+  --acme-no-band-bg: var(--acme-slate-100);
+  --acme-danger: #a12222;
+  --acme-danger-bg: #fdeaea;
+
+  // Charts: bars run blue to teal; the two trend lines are different colours.
+  --acme-chart-from: var(--acme-blue-700);
+  --acme-chart-to: var(--acme-accent-teal);
+  --acme-chart-track: #e3e9f1;
+  --acme-series-payroll: var(--acme-blue-700);
+  --acme-series-increase: var(--acme-accent-amber);
+
+  // Angular Material cards stay solid white so text on them never depends on the gradient behind.
+  --mat-card-outlined-container-color: var(--acme-surface);
+  --mat-card-elevated-container-color: var(--acme-surface);
+}
+
 // Material typography + reset
 html, body { height: 100%; margin: 0; }
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { font-family: Roboto, "Helvetica Neue", sans-serif; color: var(--acme-text); }
+
+// Chips take their tone from the data they show: one place, used by the directory, the employee page and the
+// pay-band table. Set through Material's own tokens so the chip's label and container both follow.
+@mixin chip-tone($name) {
+  --mat-chip-elevated-container-color: var(--acme-#{$name}-bg);
+  --mat-chip-label-text-color: var(--acme-#{$name});
+  background-color: var(--acme-#{$name}-bg);
+}
+
+.mat-mdc-chip {
+  &[data-adherence='WITHIN'],
+  &[data-status='ACTIVE'] {
+    @include chip-tone(within);
+  }
+
+  &[data-adherence='BELOW'],
+  &[data-status='ON_LEAVE'] {
+    @include chip-tone(below);
+  }
+
+  &[data-adherence='ABOVE'] {
+    @include chip-tone(above);
+  }
+
+  &[data-adherence='NO_BAND'] {
+    @include chip-tone(no-band);
+  }
+
+  &[data-status='TERMINATED'] {
+    @include chip-tone(danger);
+  }
+}

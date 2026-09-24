@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnalyticsFilter, GenderGapGroupBy } from '../../../core/models/analytics.model';
 import { AnalyticsService } from '../../../core/services/analytics.service';
@@ -27,7 +28,7 @@ const gap = (pct: number | null): Gap => ({ value: formatSignedPercent(pct), wor
  */
 @Component({
   selector: 'app-gender-gap-panel',
-  imports: [MatButtonToggleModule, MatCardModule, MatProgressBarModule],
+  imports: [MatButtonToggleModule, MatCardModule, MatIconModule, MatProgressBarModule],
   templateUrl: './gender-gap-panel.component.html',
   styleUrl: './gender-gap-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

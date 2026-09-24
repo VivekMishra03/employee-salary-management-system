@@ -14,26 +14,26 @@ svg {
 
 .empty {
   margin: 8px 0;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
 }
 
 .grid {
-  stroke: rgba(0, 0, 0, 0.1);
+  stroke: var(--acme-border);
   stroke-width: 1;
 }
 
 .series {
-  stroke: #3f51b5;
+  stroke: var(--chart-series, var(--acme-series-payroll));
   stroke-width: 2;
 }
 
 .dot {
-  fill: #3f51b5;
+  fill: var(--chart-series, var(--acme-series-payroll));
 }
 
 .y-label,
 .x-label {
-  fill: rgba(0, 0, 0, 0.7);
+  fill: var(--acme-text-muted);
   font-size: 11px;
 }
 

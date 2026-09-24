@@ -8,7 +8,7 @@
 
 .empty {
   margin: 8px 0;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
 }
 
 .bar-row {
@@ -23,14 +23,14 @@
 .track {
   position: relative;
   height: 16px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--acme-chart-track);
 }
 
 .bar {
   position: absolute;
   top: 0;
   bottom: 0;
-  background: #3f51b5;
+  background: linear-gradient(90deg, var(--acme-chart-from), var(--acme-chart-to));
 }
 
 .bar-value {

@@ -3,6 +3,7 @@ import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { AnalyticsFilter, PayBandAdherence, PayBandReport } from '../../../core/models/analytics.model';
 import { MoneyPipe } from '../../../core/pipes/money.pipe';
@@ -24,7 +25,7 @@ const ADHERENCE_LABEL: Record<PayBandAdherence, string> = {
  */
 @Component({
   selector: 'app-pay-bands-panel',
-  imports: [RouterLink, MatCardModule, MatChipsModule, MatPaginatorModule, MatProgressBarModule, MoneyPipe],
+  imports: [RouterLink, MatCardModule, MatIconModule, MatChipsModule, MatPaginatorModule, MatProgressBarModule, MoneyPipe],
   templateUrl: './pay-bands-panel.component.html',
   styleUrl: './pay-bands-panel.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

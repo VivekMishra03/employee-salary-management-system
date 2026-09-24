@@ -1,5 +1,9 @@
 @use '../panel';
 
+:host {
+  --panel-accent: var(--acme-accent-blue);
+}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -7,14 +11,35 @@
   margin: 0;
 }
 
+// Each figure has its own tint; the label and value stay as text, so colour is only a second cue.
 .stat {
+  --stat-accent: var(--acme-accent-slate);
   padding: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--acme-border);
+  border-left: 4px solid var(--stat-accent);
   border-radius: 8px;
+  background: var(--stat-tint, var(--acme-tint-slate));
+  color: var(--acme-text);
+
+  &[data-stat='headcount'] {
+    --stat-tint: var(--acme-tint-blue);
+    --stat-accent: var(--acme-accent-blue);
+  }
+
+  &[data-stat='totalPayroll'] {
+    --stat-tint: var(--acme-tint-teal);
+    --stat-accent: var(--acme-accent-teal);
+  }
+
+  &[data-stat='mean'],
+  &[data-stat='median'] {
+    --stat-tint: var(--acme-tint-violet);
+    --stat-accent: var(--acme-accent-violet);
+  }
 
   dt {
     font-size: 12px;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
   }
 
   dd {

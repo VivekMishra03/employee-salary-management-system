@@ -1,5 +1,9 @@
 @use '../panel';
 
+:host {
+  --panel-accent: var(--acme-accent-violet);
+}
+
 .buckets {
   width: 120px;
 }

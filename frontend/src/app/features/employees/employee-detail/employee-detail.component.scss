@@ -6,25 +6,16 @@
 
 .header-card {
   margin-bottom: 24px;
+  border-top: 4px solid var(--acme-accent-blue);
+}
+
+#detail-tabs {
+  border-radius: 8px;
+  background: var(--acme-surface);
 }
 
 .status-chip {
   margin-left: auto;
-
-  &[data-status='ACTIVE'] {
-    background: #e6f4ea;
-    color: #1e6b34;
-  }
-
-  &[data-status='ON_LEAVE'] {
-    background: #fff4e0;
-    color: #8a5300;
-  }
-
-  &[data-status='TERMINATED'] {
-    background: #fdeaea;
-    color: #a12222;
-  }
 }
 
 .profile {
@@ -35,16 +26,20 @@
   padding: 24px 16px;
 
   dt {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
   }
 
   dd {
     margin: 0;
   }
+
+  a {
+    color: var(--acme-link);
+  }
 }
 
 .muted {
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
   font-size: 0.875rem;
 }
 
@@ -53,7 +48,7 @@
 }
 
 .superseded {
-  color: rgba(0, 0, 0, 0.5);
+  color: var(--acme-text-muted);
   font-style: italic;
 }
 
@@ -61,7 +56,7 @@
   margin-left: 8px;
   padding: 2px 8px;
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.08);
+  background: var(--acme-slate-100);
   font-size: 0.75rem;
 }
 

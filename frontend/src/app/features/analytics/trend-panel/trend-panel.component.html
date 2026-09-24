@@ -1,6 +1,6 @@
 <mat-card class="panel" appearance="outlined">
   <mat-card-header>
-    <mat-card-title>Compensation over time</mat-card-title>
+    <mat-card-title><mat-icon class="panel-icon" fontIcon="show_chart" />Compensation over time</mat-card-title>
     <mat-card-subtitle>Total annual payroll in USD and the average pay increase per period</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
@@ -45,7 +45,7 @@
         <h3>Total payroll (USD)</h3>
         <app-line-chart [points]="payrollPoints()" caption="Total annual payroll by period, in USD" />
         <h3>Average increase</h3>
-        <app-line-chart [points]="increasePoints()" [axisFormat]="formatPercent" caption="Average pay increase by period" />
+        <app-line-chart class="increase" [points]="increasePoints()" [axisFormat]="formatPercent" caption="Average pay increase by period" />
         <div class="scroll">
           <table class="trend">
             <thead>

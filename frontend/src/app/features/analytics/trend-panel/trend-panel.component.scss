@@ -1,5 +1,14 @@
 @use '../panel';
 
+:host {
+  --panel-accent: var(--acme-accent-cyan);
+}
+
+// The second chart is the increase series; the first keeps the chart's default (payroll) colour.
+.increase {
+  --chart-series: var(--acme-series-increase);
+}
+
 .date {
   width: 170px;
 }
@@ -24,16 +33,16 @@ h3 {
   th,
   td {
     padding: 6px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid var(--acme-border);
     text-align: left;
   }
 
   thead th {
     position: sticky;
     top: 0;
-    background: #fff;
+    background: var(--acme-surface);
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
   }
 
   .num {

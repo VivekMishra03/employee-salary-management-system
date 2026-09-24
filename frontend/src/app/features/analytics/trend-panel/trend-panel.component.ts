@@ -7,6 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NEVER, map, merge } from 'rxjs';
 import { AnalyticsFilter, TrendInterval } from '../../../core/models/analytics.model';
@@ -32,7 +33,7 @@ export const DATE_DEBOUNCE_MS = 400;
 @Component({
   selector: 'app-trend-panel',
   imports: [
-    ReactiveFormsModule, MatButtonToggleModule, MatCardModule, MatDatepickerModule, MatFormFieldModule,
+    ReactiveFormsModule, MatButtonToggleModule, MatCardModule, MatDatepickerModule, MatFormFieldModule, MatIconModule,
     MatInputModule, MatProgressBarModule, MoneyPipe, LineChartComponent,
   ],
   providers: [

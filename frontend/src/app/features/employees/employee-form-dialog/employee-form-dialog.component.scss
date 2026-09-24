@@ -20,13 +20,13 @@
 .readonly-label {
   display: block;
   font-size: 0.75rem;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
 }
 
 .conflict-notice {
   margin: 0 0 12px;
   padding: 12px;
   border-radius: 4px;
-  background: #fff4e0;
-  color: #8a5300;
+  background: var(--acme-below-bg);
+  color: var(--acme-below);
 }

@@ -6,6 +6,19 @@
   width: 220px;
 }
 
+// This element is itself the scroll container and one viewport tall, so its own (scroll-attached)
+// background stays still while a long table scrolls; `fixed` would only paint part of the gradient
+// behind the sidenav and force repaints on scroll.
+.shell-main {
+  background: var(--acme-page-gradient) no-repeat;
+  background-size: cover;
+}
+
+.shell-toolbar {
+  background: var(--acme-toolbar-gradient);
+  color: var(--acme-toolbar-text);
+}
+
 .spacer {
   flex: 1;
 }

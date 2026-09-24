@@ -1,5 +1,10 @@
 @use '../panel';
 
+// Neutral on purpose: no gendered colours, and the sign of a gap is never coloured as good or bad.
+:host {
+  --panel-accent: var(--acme-accent-slate);
+}
+
 .scroll {
   overflow-x: auto;
 }
@@ -12,14 +17,14 @@
   th,
   td {
     padding: 6px 8px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    border-bottom: 1px solid var(--acme-border);
     text-align: left;
     font-variant-numeric: tabular-nums;
   }
 
   thead th {
     font-weight: 500;
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
   }
 
   .num {
@@ -27,17 +32,18 @@
   }
 
   .suppressed {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--acme-text-muted);
     font-style: italic;
   }
 }
 
 .gap-value {
+  color: var(--acme-text);
   font-weight: 500;
 }
 
 .gap-words {
   display: block;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.6);
+  color: var(--acme-text-muted);
 }
