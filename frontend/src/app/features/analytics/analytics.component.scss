@@ -1,0 +1,18 @@
+h1 {
+  margin: 0 0 16px;
+}
+
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(480px, 100%), 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.wide {
+  grid-column: 1 / -1;
+}
+
+.dashboard > * {
+  min-width: 0;
+}

@@ -1,0 +1,29 @@
+<figure class="chart">
+  @if (!hasData()) {
+    <p class="empty">No data to chart.</p>
+  } @else {
+    <svg [attr.viewBox]="'0 0 ' + width + ' ' + height()" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+      @for (tick of model().ticks; track $index) {
+        <line class="grid" [attr.x1]="model().plotLeft" [attr.x2]="model().plotRight" [attr.y1]="tick.y" [attr.y2]="tick.y" />
+        <text class="y-label" [attr.x]="model().plotLeft - 8" [attr.y]="tick.y" text-anchor="end" dominant-baseline="middle">{{ tick.text }}</text>
+      }
+      @for (segment of model().segments; track $index) {
+        <path class="series" [attr.d]="segment" fill="none" />
+      }
+      @for (dot of model().dots; track $index) {
+        <circle class="dot" [attr.cx]="dot.cx" [attr.cy]="dot.cy" r="3"><title>{{ dot.title }}</title></circle>
+      }
+      @for (label of model().xLabels; track $index) {
+        <text class="x-label" [attr.x]="label.x" [attr.y]="model().baseline" [attr.text-anchor]="label.anchor">{{ label.text }}</text>
+      }
+    </svg>
+    <table class="visually-hidden">
+      <caption>{{ caption() }}</caption>
+      <tbody>
+        @for (row of rows(); track $index) {
+          <tr><th scope="row">{{ row.label }}</th><td>{{ row.valueText }}</td></tr>
+        }
+      </tbody>
+    </table>
+  }
+</figure>

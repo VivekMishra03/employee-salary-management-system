@@ -1,0 +1,72 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Compensation over time</mat-card-title>
+    <mat-card-subtitle>Total annual payroll in USD and the average pay increase per period</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <form class="panel-controls" [formGroup]="form">
+      <mat-button-toggle-group formControlName="interval" aria-label="Interval">
+        <mat-button-toggle value="MONTH">Month</mat-button-toggle>
+        <mat-button-toggle value="QUARTER">Quarter</mat-button-toggle>
+        <mat-button-toggle value="YEAR">Year</mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <mat-form-field appearance="outline" class="date">
+        <mat-label>From</mat-label>
+        <input id="trend-from" matInput [matDatepicker]="fromPicker" formControlName="from" />
+        <mat-datepicker-toggle matIconSuffix [for]="fromPicker" />
+        <mat-datepicker #fromPicker />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="date">
+        <mat-label>To</mat-label>
+        <input id="trend-to" matInput [matDatepicker]="toPicker" formControlName="to" />
+        <mat-datepicker-toggle matIconSuffix [for]="toPicker" />
+        <mat-datepicker #toPicker />
+      </mat-form-field>
+    </form>
+
+    <p class="panel-note trend-scope">
+      Counts everyone employed in each period, including people who have since left.
+      A status filter applies to their current status.
+    </p>
+
+    @if (rangeError(); as message) {
+      <p class="panel-error" role="alert">{{ message }}</p>
+    } @else {
+      @let s = state();
+      @if (s.status === 'loading') {
+        <mat-progress-bar mode="indeterminate" aria-label="Loading compensation trend" />
+      } @else if (s.status === 'error') {
+        <p class="panel-error" role="alert">{{ s.message }}</p>
+      } @else if (s.data.length === 0) {
+        <p class="panel-empty">No payroll data for this range</p>
+      } @else {
+        <h3>Total payroll (USD)</h3>
+        <app-line-chart [points]="payrollPoints()" caption="Total annual payroll by period, in USD" />
+        <h3>Average increase</h3>
+        <app-line-chart [points]="increasePoints()" [axisFormat]="formatPercent" caption="Average pay increase by period" />
+        <div class="scroll">
+          <table class="trend">
+            <thead>
+              <tr>
+                <th scope="col">Period</th>
+                <th scope="col">Total payroll (USD)</th>
+                <th scope="col">Average increase</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of rows(); track row.period) {
+                <tr>
+                  <th scope="row">{{ row.period }}</th>
+                  <td class="num">{{ row.payroll | money }}</td>
+                  <td class="num">{{ row.increaseText }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    }
+  </mat-card-content>
+</mat-card>

@@ -1,0 +1,61 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Gender pay gap</mat-card-title>
+    <mat-card-subtitle>Difference between men's and women's annual base pay</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="panel-controls">
+      <mat-button-toggle-group [value]="groupBy()" (change)="pick($event)" aria-label="Group by">
+        <mat-button-toggle value="DEPARTMENT">Department</mat-button-toggle>
+        <mat-button-toggle value="JOB_LEVEL">Job level</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <p class="gap-note panel-note">
+      A positive gap means women are paid less than men; a negative gap means women are paid more.
+      Groups without enough men and women are suppressed to protect individuals: a minimum group size applies.
+    </p>
+    @let s = state();
+    @if (s.status === 'loading') {
+      <mat-progress-bar mode="indeterminate" aria-label="Loading gender pay gap" />
+    } @else if (s.status === 'error') {
+      <p class="panel-error" role="alert">{{ s.message }}</p>
+    } @else if (rows().length === 0) {
+      <p class="panel-empty">No employees match these filters</p>
+    } @else {
+      <div class="scroll">
+        <table class="gaps">
+          <thead>
+            <tr>
+              <th scope="col">Group</th>
+              <th scope="col">Men</th>
+              <th scope="col">Women</th>
+              <th scope="col">Mean gap</th>
+              <th scope="col">Median gap</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of rows(); track row.key) {
+              <tr>
+                <th scope="row">{{ row.label }}</th>
+                @if (row.suppressed) {
+                  <td class="suppressed" colspan="4">Suppressed: group too small</td>
+                } @else {
+                  <td class="num">{{ row.men }}</td>
+                  <td class="num">{{ row.women }}</td>
+                  <td>
+                    <span class="gap-value">{{ row.mean.value }}</span>&ngsp;
+                    <span class="gap-words">{{ row.mean.words }}</span>
+                  </td>
+                  <td>
+                    <span class="gap-value">{{ row.median.value }}</span>&ngsp;
+                    <span class="gap-words">{{ row.median.words }}</span>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

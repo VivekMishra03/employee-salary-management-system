@@ -1,0 +1,90 @@
+@use '../panel';
+
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 8px 0 16px;
+}
+
+.count {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 120px;
+  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+
+  &[aria-pressed='true'] {
+    border-color: #3f51b5;
+    background: #e8eaf6;
+  }
+
+  .label {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .number {
+    font-size: 20px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.scroll {
+  overflow-x: auto;
+}
+
+.employees {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  thead th {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.adherence-chip {
+  &[data-adherence='BELOW'] {
+    background: #fdeaea;
+    color: #a12222;
+  }
+
+  &[data-adherence='WITHIN'] {
+    background: #e6f4ea;
+    color: #1e6b34;
+  }
+
+  &[data-adherence='ABOVE'] {
+    background: #fff4e0;
+    color: #8a5300;
+  }
+
+  &[data-adherence='NO_BAND'] {
+    background: #eceff1;
+    color: #37474f;
+  }
+}

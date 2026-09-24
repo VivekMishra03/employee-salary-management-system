@@ -1,0 +1,25 @@
+@use '../panel';
+
+.groups {
+  width: 100%;
+  margin-top: 16px;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th:first-child {
+    text-align: left;
+  }
+
+  thead th {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}

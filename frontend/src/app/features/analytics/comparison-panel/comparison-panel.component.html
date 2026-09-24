@@ -1,0 +1,40 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Pay comparison</mat-card-title>
+    <mat-card-subtitle>Median annual base pay, in USD</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="panel-controls">
+      <mat-button-toggle-group [value]="groupBy()" (change)="pick($event)" aria-label="Group by">
+        <mat-button-toggle value="DEPARTMENT">Department</mat-button-toggle>
+        <mat-button-toggle value="COUNTRY">Country</mat-button-toggle>
+        <mat-button-toggle value="JOB_LEVEL">Job level</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    @let s = state();
+    @if (s.status === 'loading') {
+      <mat-progress-bar mode="indeterminate" aria-label="Loading pay comparison" />
+    } @else if (s.status === 'error') {
+      <p class="panel-error" role="alert">{{ s.message }}</p>
+    } @else if (s.data.length === 0) {
+      <p class="panel-empty">No employees match these filters</p>
+    } @else {
+      <app-bar-chart [bars]="bars()" caption="Median annual base pay by group" />
+      <table class="groups">
+        <thead>
+          <tr><th scope="col">Group</th><th scope="col">Headcount</th><th scope="col">Median</th><th scope="col">Mean</th></tr>
+        </thead>
+        <tbody>
+          @for (group of s.data; track group.key) {
+            <tr>
+              <th scope="row">{{ group.label }}</th>
+              <td>{{ group.headcount }}</td>
+              <td>{{ group.median | money }}</td>
+              <td>{{ group.mean | money }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </mat-card-content>
+</mat-card>

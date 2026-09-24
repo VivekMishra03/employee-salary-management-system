@@ -1,0 +1,57 @@
+<div class="filters">
+  <mat-form-field appearance="outline" class="filter-search">
+    <mat-label>Search name, code or email</mat-label>
+    <input id="analytics-search" matInput [formControl]="searchCtrl" />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter">
+    <mat-label>Department</mat-label>
+    <mat-select id="filter-dept" [formControl]="departmentCtrl">
+      <mat-option [value]="null">All</mat-option>
+      @for (d of departments(); track d.id) {
+        <mat-option [value]="d.id">{{ d.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter">
+    <mat-label>Country</mat-label>
+    <mat-select id="filter-country" [formControl]="countryCtrl">
+      <mat-option [value]="null">All</mat-option>
+      @for (c of countries(); track c.code) {
+        <mat-option [value]="c.code">{{ c.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter filter-status">
+    <mat-label>Status</mat-label>
+    <mat-select id="filter-status" [formControl]="statusCtrl">
+      <mat-option value="DEFAULT">Active + on leave (default)</mat-option>
+      <mat-option value="ACTIVE">Active</mat-option>
+      <mat-option value="ON_LEAVE">On leave</mat-option>
+      <mat-option value="TERMINATED">Terminated</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter">
+    <mat-label>Type</mat-label>
+    <mat-select id="filter-type" [formControl]="typeCtrl">
+      <mat-option [value]="null">All</mat-option>
+      <mat-option value="FULL_TIME">Full time</mat-option>
+      <mat-option value="PART_TIME">Part time</mat-option>
+      <mat-option value="CONTRACT">Contract</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter">
+    <mat-label>Level</mat-label>
+    <mat-select id="filter-level" [formControl]="levelCtrl">
+      <mat-option [value]="null">All</mat-option>
+      @for (l of jobLevels(); track l) {
+        <mat-option [value]="l">{{ l }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>

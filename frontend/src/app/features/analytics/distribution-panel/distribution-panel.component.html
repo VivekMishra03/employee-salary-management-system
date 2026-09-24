@@ -1,0 +1,28 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Salary distribution</mat-card-title>
+    <mat-card-subtitle>Employees per annual base pay range, in USD</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="panel-controls">
+      <mat-form-field appearance="outline" class="buckets">
+        <mat-label>Buckets</mat-label>
+        <input id="bucket-count" matInput type="number" [min]="range.min" [max]="range.max" step="1"
+               [formControl]="bucketsCtrl" />
+      </mat-form-field>
+    </div>
+    @if (bucketsInvalid()) {
+      <p class="panel-error" role="alert">Enter a whole number from {{ range.min }} to {{ range.max }}.</p>
+    }
+    @let s = state();
+    @if (s.status === 'loading') {
+      <mat-progress-bar mode="indeterminate" aria-label="Loading salary distribution" />
+    } @else if (s.status === 'error') {
+      <p class="panel-error" role="alert">{{ s.message }}</p>
+    } @else if (s.data.length === 0) {
+      <p class="panel-empty">No employees match these filters</p>
+    } @else {
+      <app-bar-chart [bars]="bars()" caption="Employees per salary range" />
+    }
+  </mat-card-content>
+</mat-card>

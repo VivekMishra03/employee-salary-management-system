@@ -22,10 +22,11 @@ describe('ShellComponent', () => {
 
   afterEach(() => localStorage.clear());
 
-  it('FR-2.1: navigation offers the employee directory, the one screen the API serves at this point', () => {
+  // ADR-0012: import/export (FR-5) is dropped, so the two screens the API serves are the whole menu.
+  it('FR-2.1 / FR-4: navigation offers the employee directory and the analytics dashboard, and nothing else', () => {
     const labels = Array.from(fixture.nativeElement.querySelectorAll('mat-nav-list a'))
       .map(a => (a as HTMLElement).textContent?.trim());
-    expect(labels).toEqual(['Employees']);
+    expect(labels).toEqual(['Employees', 'Analytics']);
   });
 
   it('FR-1.3: logout discards the token and returns to the login page', () => {

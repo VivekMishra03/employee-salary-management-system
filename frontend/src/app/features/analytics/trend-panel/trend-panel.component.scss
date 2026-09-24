@@ -1,0 +1,43 @@
+@use '../panel';
+
+.date {
+  width: 170px;
+}
+
+h3 {
+  margin: 16px 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.scroll {
+  max-height: 320px;
+  margin-top: 16px;
+  overflow: auto;
+}
+
+.trend {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  th,
+  td {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    text-align: left;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    background: #fff;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}

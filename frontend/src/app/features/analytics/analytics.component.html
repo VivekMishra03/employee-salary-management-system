@@ -1,0 +1,12 @@
+<h1>Pay analytics</h1>
+
+<app-analytics-filters (filterChange)="filter.set($event)" />
+
+<div class="dashboard">
+  <app-summary-panel class="wide" [filter]="filter()" />
+  <app-comparison-panel [filter]="filter()" />
+  <app-distribution-panel [filter]="filter()" />
+  <app-pay-bands-panel class="wide" [filter]="filter()" />
+  <app-gender-gap-panel [filter]="filter()" />
+  <app-trend-panel [filter]="filter()" />
+</div>

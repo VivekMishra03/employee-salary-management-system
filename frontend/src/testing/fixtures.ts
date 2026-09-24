@@ -2,6 +2,9 @@
 // asserts on them reads as a sentence. Only spec files import this (tsconfig.app.json excludes it).
 import { EmployeeDetail, EmployeeListItem, Page, SalarySummary } from '../app/core/models/employee.model';
 import { Department, JobRole, Location } from '../app/core/models/reference.model';
+import {
+  AnalyticsSummary, DistributionBucket, GenderGapStat, GroupStat, PayBandEmployee, PayBandReport, TrendPoint,
+} from '../app/core/models/analytics.model';
 
 export const DEPARTMENTS: Department[] = [
   { id: 1, code: 'ENG', name: 'Engineering', parentDepartmentId: null },
@@ -100,4 +103,62 @@ export function detail(overrides: Partial<EmployeeDetail> = {}): EmployeeDetail 
     updatedAt: '2024-01-01T09:00:00Z',
     ...overrides,
   };
+}
+
+// FR-4: analytics response shapes (backend dto/*.java). Figures are arbitrary but fixed.
+export function summaryStats(overrides: Partial<AnalyticsSummary> = {}): AnalyticsSummary {
+  return {
+    headcount: 3, totalPayroll: 300000.5, mean: 100000.17, median: 99000, p25: 90000.25, p75: 110000,
+    ratesAsOf: '2026-09-01', ...overrides,
+  };
+}
+
+export const EMPTY_SUMMARY: AnalyticsSummary = {
+  headcount: 0, totalPayroll: 0, mean: null, median: null, p25: null, p75: null, ratesAsOf: '2026-09-01',
+};
+
+export function groupStats(): GroupStat[] {
+  return [
+    { key: '1', label: 'Engineering', headcount: 40, median: 120000, mean: 125000.5 },
+    { key: '2', label: 'Sales', headcount: 25, median: 80000, mean: 82000 },
+  ];
+}
+
+export function buckets(): DistributionBucket[] {
+  return [
+    { lower: 50000, upper: 75000, count: 12 },
+    { lower: 75000, upper: 100000, count: 30 },
+    { lower: 100000, upper: 125000, count: 8 },
+  ];
+}
+
+/** One measurable group and one suppressed one; the suppressed one carries nulls, as the API sends it (ADR-0013). */
+export function genderGaps(): GenderGapStat[] {
+  return [
+    { key: '1', label: 'Engineering', maleCount: 30, femaleCount: 20, meanGapPct: 4.25, medianGapPct: -3.1, suppressed: false },
+    { key: '2', label: 'Legal', maleCount: null, femaleCount: null, meanGapPct: null, medianGapPct: null, suppressed: true },
+  ];
+}
+
+export function payBandEmployee(overrides: Partial<PayBandEmployee> = {}): PayBandEmployee {
+  return {
+    employeeId: 42, employeeCode: 'E00042', fullName: 'Ada Byron', jobTitle: 'Senior Software Engineer', jobLevel: 'L4',
+    countryCode: 'DE', currencyCode: 'EUR', annualisedAmount: 95000, bandMin: 80000, bandMid: 100000, bandMax: 120000,
+    compaRatio: 0.95, adherence: 'WITHIN', ...overrides,
+  };
+}
+
+export function payBandReport(content: PayBandEmployee[] = [payBandEmployee()], totalElements = content.length): PayBandReport {
+  return {
+    counts: { below: 4, within: 30, above: 2, noBand: 1 },
+    employees: { content, page: 0, size: 20, totalElements, totalPages: Math.ceil(totalElements / 20) },
+  };
+}
+
+export function trendPoints(): TrendPoint[] {
+  return [
+    { period: '2026-01', totalPayrollUsd: 1000000, avgIncreasePct: null },
+    { period: '2026-02', totalPayrollUsd: 1050000.5, avgIncreasePct: 3.5 },
+    { period: '2026-03', totalPayrollUsd: 1100000, avgIncreasePct: 2.25 },
+  ];
 }

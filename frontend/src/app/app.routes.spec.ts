@@ -25,6 +25,13 @@ describe('app routes', () => {
       expect(childPaths).toContain('employees/:id');
     });
 
+    it('FR-1.3 / FR-4: the analytics dashboard is a child of the protected shell, so it inherits the guard', () => {
+      const analytics = (shell!.children ?? []).find(c => c.path === 'analytics');
+      expect(analytics).toBeDefined();
+      expect(analytics!.loadComponent).toBeDefined();
+      expect(routes.filter(r => r !== shell && r.path === 'analytics')).toEqual([]);
+    });
+
     it('FR-1.3: no route outside the shell other than login serves a page', () => {
       const outside = routes.filter(r => r !== shell).map(r => r.path);
       expect(outside).toEqual(['login', '**']);
@@ -76,6 +83,26 @@ describe('app routes', () => {
 
       await harness.navigateByUrl('/');
       expect(TestBed.inject(Router).url).toBe('/login');
+    });
+
+    it('FR-1.3 / FR-4: with no token, opening /analytics directly ends at /login and requests no analytics data', async () => {
+      const harness = await RouterTestingHarness.create();
+
+      await harness.navigateByUrl('/analytics');
+
+      expect(TestBed.inject(Router).url).toBe('/login');
+      http.expectNone(r => r.url.startsWith('/api/v1/analytics'));
+    });
+
+    it('FR-1.3 / FR-4: with a token, /analytics is reached and asks for its data (so the redirect above is the guard, not a missing route)', async () => {
+      localStorage.setItem('acme_jwt', 'jwt-1');
+      const harness = await RouterTestingHarness.create();
+
+      await harness.navigateByUrl('/analytics');
+
+      expect(TestBed.inject(Router).url).toBe('/analytics');
+      expect(http.match(r => r.url === '/api/v1/analytics/summary').length).toBe(1);
+      http.match(() => true); // the other panels' and the filters' requests are not this test's concern
     });
 
     it('FR-1.3: with a token, the same employee URL is reached (so the redirect above is the guard, not a broken route)', async () => {

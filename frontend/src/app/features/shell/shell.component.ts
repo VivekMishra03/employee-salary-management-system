@@ -28,8 +28,10 @@ export class ShellComponent {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
+  // FR-5 (import/export) was dropped (ADR-0012); nothing here may point at a screen that does not exist.
   protected readonly navItems = [
     { label: 'Employees', icon: 'people', route: '/employees' },
+    { label: 'Analytics', icon: 'insights', route: '/analytics' },
   ];
 
   logout(): void {

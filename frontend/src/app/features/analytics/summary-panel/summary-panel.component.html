@@ -1,0 +1,37 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Summary</mat-card-title>
+    <mat-card-subtitle>Annual base pay, in USD</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    @let s = state();
+    @if (s.status === 'loading') {
+      <mat-progress-bar mode="indeterminate" aria-label="Loading summary" />
+    } @else if (s.status === 'error') {
+      <p class="panel-error" role="alert">{{ s.message }}</p>
+    } @else if (view(); as v) {
+      @if (v.empty) {
+        <p class="panel-empty">No employees match these filters</p>
+      }
+      <dl class="stats">
+        <div class="stat" data-stat="headcount">
+          <dt>Headcount</dt>
+          <dd class="value">{{ v.headcount }}</dd>
+        </div>
+        @for (figure of v.figures; track figure.key) {
+          <div class="stat" [attr.data-stat]="figure.key">
+            <dt>{{ figure.label }}</dt>
+            <dd class="value">{{ figure.value | money }}</dd>
+          </div>
+        }
+      </dl>
+    }
+    <p class="panel-note fx-note">
+      Amounts are converted to USD at the rate effective when each salary was recorded, except the pay-band table,
+      which is in each employee's own currency.
+      @if (view(); as v) {
+        {{ v.ratesNote }}
+      }
+    </p>
+  </mat-card-content>
+</mat-card>

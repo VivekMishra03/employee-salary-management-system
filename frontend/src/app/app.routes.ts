@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
+// FR-5 (import/export) was dropped from scope (ADR-0012), so no route points at it and nothing in the
+// UI promises what the API does not serve.
 export const routes: Routes = [
   {
     path: 'login',
@@ -22,6 +24,12 @@ export const routes: Routes = [
         path: 'employees/:id',
         loadComponent: () =>
           import('./features/employees/employee-detail/employee-detail.component').then(m => m.EmployeeDetailComponent),
+      },
+      {
+        // FR-4: the analytics dashboard.
+        path: 'analytics',
+        loadComponent: () =>
+          import('./features/analytics/analytics.component').then(m => m.AnalyticsComponent),
       },
     ],
   },

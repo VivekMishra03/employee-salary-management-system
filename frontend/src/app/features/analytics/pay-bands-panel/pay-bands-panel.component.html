@@ -1,0 +1,72 @@
+<mat-card class="panel" appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Pay-band adherence</mat-card-title>
+    <mat-card-subtitle>Compa-ratio is pay divided by the band midpoint, in the employee's own currency</mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    @let s = state();
+    @if (s.status === 'loading') {
+      <mat-progress-bar mode="indeterminate" aria-label="Loading pay-band report" />
+    } @else if (s.status === 'error') {
+      <p class="panel-error" role="alert">{{ s.message }}</p>
+    }
+    @if (report(); as r) {
+      <div class="counts" role="group" aria-label="Show employees by adherence">
+        @for (c of counts(); track c.adherence) {
+          <button type="button" class="count" [attr.data-adherence]="c.adherence"
+                  [attr.aria-pressed]="adherence() === c.adherence" (click)="toggleAdherence(c.adherence)">
+            <span class="label">{{ c.label }}</span>&ngsp;
+            <span class="number">{{ c.count }}</span>
+          </button>
+        }
+      </div>
+      @if (rows().length === 0) {
+        <p class="panel-empty">No employees in this view</p>
+      } @else {
+        <div class="scroll">
+          <table class="employees">
+            <thead>
+              <tr>
+                <th scope="col">Employee</th>
+                <th scope="col">Code</th>
+                <th scope="col">Role</th>
+                <th scope="col">Level</th>
+                <th scope="col">Country</th>
+                <th scope="col">Pay</th>
+                <th scope="col">Band min</th>
+                <th scope="col">Band mid</th>
+                <th scope="col">Band max</th>
+                <th scope="col">Compa-ratio</th>
+                <th scope="col">Adherence</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (e of rows(); track e.employeeId) {
+                <tr>
+                  <th scope="row"><a [routerLink]="['/employees', e.employeeId]">{{ e.fullName }}</a></th>
+                  <td>{{ e.employeeCode }}</td>
+                  <td>{{ e.jobTitle }}</td>
+                  <td>{{ e.jobLevel }}</td>
+                  <td>{{ e.countryCode }}</td>
+                  <td class="num">{{ e.annualisedAmount | money: e.currencyCode }}</td>
+                  <td class="num">{{ e.bandMin | money }}</td>
+                  <td class="num">{{ e.bandMid | money }}</td>
+                  <td class="num">{{ e.bandMax | money }}</td>
+                  <td class="num">{{ e.compaRatioText }}</td>
+                  <td><mat-chip class="adherence-chip" [attr.data-adherence]="e.adherence">{{ e.adherenceLabel }}</mat-chip></td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+      <mat-paginator
+        [length]="r.employees.totalElements"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="pageSizeOptions"
+        (page)="onPage($event)"
+        showFirstLastButtons />
+    }
+  </mat-card-content>
+</mat-card>
