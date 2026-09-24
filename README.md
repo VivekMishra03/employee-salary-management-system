@@ -4,21 +4,6 @@ Web software that replaces spreadsheet-based salary management for an organisati
 employees across multiple countries, and lets an HR Manager answer questions about how the
 organisation pays people.
 
-> **Status: in development.** The backend is built through **M6**: the data model, authentication, the
-> employee directory, salary recording with history, FX conversion and an audit trail, and the pay-analytics
-> API ([ADR-0013](docs/adr/0013-analytics-design.md); server-side query times are recorded in
-> [`docs/perf/`](docs/perf/nfr-1-analytics-2026-09-24.md), request latency on the deployed service is not yet
-> measured). The Angular UI has login, the employee directory, employee detail, salary recording and the
-> analytics dashboard. It is tested against a mocked API; sign-in and the directory have been tried by hand
-> against the deployed API, and the analytics dashboard has not yet been checked in a browser.
-> The seed script (M5) has loaded the 10,000-employee dataset into Neon in 29.22 s
-> ([`docs/perf/seed-run-2026-09-24.md`](docs/perf/seed-run-2026-09-24.md), [ADR-0014](docs/adr/0014-seed-data-design.md)). **CSV import and export (FR-5, M7) has been removed
-> from the current scope and is not implemented**, so requirements FR-5.1 to FR-5.6 are unmet.
-> Deployment (M9) is not finished, and the deployed API does not yet include the analytics endpoints.
-> See [`requirements.md`](requirements.md) §10 and
-> [ADR-0012](docs/adr/0012-m8-ui-before-analytics-and-import.md).
-> Claims in this README describe what exists today — nothing here is aspirational.
-
 ## Documentation
 
 | Document | Purpose |
