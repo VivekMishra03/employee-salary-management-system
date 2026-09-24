@@ -80,3 +80,19 @@ tasks.named('jacocoTestReport') {
 tasks.named('bootJar') {
     archiveFileName = 'app.jar'
 }
+
+// FR-6: repeatable deterministic seed script (requirements.md FR-6.1, CLAUDE.md section 9)
+tasks.register('seed', Exec) {
+    group = 'application'
+    description = 'Seeds the database with 10,000 employees and deterministic reference data (FR-6)'
+    workingDir project.rootDir.parentFile
+    def nodeArgs = ['scripts/seed.js']
+    if (project.hasProperty('seedArgs')) {
+        nodeArgs.addAll(project.property('seedArgs').split('\\s+'))
+    }
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        commandLine(['cmd', '/c', 'node'] + nodeArgs)
+    } else {
+        commandLine(['node'] + nodeArgs)
+    }
+}

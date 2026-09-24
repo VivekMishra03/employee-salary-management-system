@@ -1,0 +1,16 @@
+{
+  "name": "salary-management-seeder",
+  "version": "1.0.0",
+  "description": "FR-6: High-speed deterministic database seeding script for ACME Employee Salary Management System",
+  "main": "seed.js",
+  "type": "module",
+  "scripts": {
+    "seed": "node seed.js",
+    "test": "node --test seed.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "pg": "^8.13.1"
+  }
+}
