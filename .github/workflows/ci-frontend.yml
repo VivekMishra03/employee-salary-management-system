@@ -20,8 +20,17 @@ on:
 
 jobs:
   build:
-    name: Frontend (Angular 21)
+    name: Frontend (Angular 21, TZ=${{ matrix.tz }})
     runs-on: ubuntu-latest
+    strategy:
+      # Dates are the money-adjacent bug class here: an effective date shifted by a day is a raise
+      # recorded for the wrong month. GitHub runners are UTC, and in UTC toISOString() and Date.parse
+      # happen to give the right calendar day, so such bugs pass silently. The suite therefore runs
+      # once east of UTC and once west of it, where they fail. The production build does not depend
+      # on the zone and runs in the first job only.
+      fail-fast: false
+      matrix:
+        tz: [Pacific/Auckland, America/Los_Angeles]
     defaults:
       run:
         working-directory: frontend
@@ -47,7 +56,9 @@ jobs:
       - name: Unit tests
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          TZ: ${{ matrix.tz }}
         run: npm test -- --watch=false --browsers=ChromeHeadlessCI
 
       - name: Production build
+        if: matrix.tz == 'Pacific/Auckland'
         run: npm run build -- --configuration production
