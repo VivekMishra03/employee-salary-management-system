@@ -1,0 +1,184 @@
+<h2 mat-dialog-title>{{ employee ? 'Edit employee' : 'New employee' }}</h2>
+
+<mat-dialog-content>
+  @if (conflict()) {
+    <p class="conflict-notice" role="alert">
+      This employee was changed by someone else since you opened this form. Nothing was saved.
+      Close this dialog to load the latest version, then make your change again.
+    </p>
+  }
+
+  <form id="employee-form" class="employee-form" [formGroup]="form" (ngSubmit)="submit()">
+
+    @if (employee) {
+      <div class="readonly-row">
+        <div><span class="readonly-label">Employee code</span> {{ employee.employeeCode }}</div>
+        <div><span class="readonly-label">Hire date</span> {{ employee.hireDate | date: 'mediumDate' }}</div>
+      </div>
+    } @else {
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Employee code</mat-label>
+          <input id="emp-code" matInput formControlName="employeeCode" maxlength="20" />
+          @if (form.controls.employeeCode.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Hire date</mat-label>
+          <input id="emp-hire-date" matInput [matDatepicker]="hirePicker" formControlName="hireDate" />
+          <mat-datepicker-toggle matIconSuffix [for]="hirePicker" />
+          <mat-datepicker #hirePicker />
+          @if (form.controls.hireDate.hasError('required')) {
+            <mat-error>Required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    }
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>First name</mat-label>
+        <input id="emp-first-name" matInput formControlName="firstName" maxlength="100" />
+        @if (form.controls.firstName.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last name</mat-label>
+        <input id="emp-last-name" matInput formControlName="lastName" maxlength="100" />
+        @if (form.controls.lastName.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input id="emp-email" matInput type="email" formControlName="email" maxlength="255" />
+        @if (form.controls.email.hasError('required')) {
+          <mat-error>Required</mat-error>
+        } @else if (form.controls.email.hasError('email')) {
+          <mat-error>Enter a valid email</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Gender (optional)</mat-label>
+        <mat-select id="emp-gender" formControlName="gender">
+          <mat-option [value]="null">Not specified</mat-option>
+          @for (g of genders; track g) {
+            <mat-option [value]="g">{{ g }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Employment type</mat-label>
+        <mat-select id="emp-type" formControlName="employmentType">
+          @for (t of employmentTypes; track t) {
+            <mat-option [value]="t">{{ t }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.employmentType.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>FTE ratio</mat-label>
+        <input id="emp-fte" matInput type="number" step="0.001" min="0.001" max="1" formControlName="fteRatio" />
+        @if (form.controls.fteRatio.hasError('required')) {
+          <mat-error>Required</mat-error>
+        } @else if (form.controls.fteRatio.hasError('min') || form.controls.fteRatio.hasError('max')) {
+          <mat-error>Between 0.001 and 1.000</mat-error>
+        } @else if (form.controls.fteRatio.hasError('threeDecimals')) {
+          <mat-error>At most 3 decimal places</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Department</mat-label>
+        <mat-select id="emp-department" formControlName="departmentId">
+          @for (d of departments(); track d.id) {
+            <mat-option [value]="d.id">{{ d.name }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.departmentId.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Job role</mat-label>
+        <mat-select id="emp-job-role" formControlName="jobRoleId">
+          @for (r of jobRoles(); track r.id) {
+            <mat-option [value]="r.id">{{ r.title }} ({{ r.jobLevel }})</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.jobRoleId.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Location</mat-label>
+        <mat-select id="emp-location" formControlName="locationId">
+          @for (l of locations(); track l.id) {
+            <mat-option [value]="l.id">{{ l.city }}, {{ l.countryName }}</mat-option>
+          }
+        </mat-select>
+        @if (form.controls.locationId.hasError('required')) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+
+      @if (employee) {
+        <mat-form-field appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select id="emp-status" formControlName="employmentStatus">
+            @for (s of editableStatuses; track s) {
+              <mat-option [value]="s">{{ s }}</mat-option>
+            }
+          </mat-select>
+          <mat-hint>Use Deactivate on the employee page to terminate.</mat-hint>
+        </mat-form-field>
+      }
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Manager (search by name, code or email)</mat-label>
+      <input id="emp-manager" matInput [formControl]="managerCtrl" [matAutocomplete]="managerAuto" />
+      @if (managerCtrl.value) {
+        <button matSuffix mat-icon-button type="button" aria-label="Clear manager" (click)="clearManager()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+      <mat-autocomplete #managerAuto="matAutocomplete" [displayWith]="displayManager">
+        @for (option of managerOptions(); track option.id) {
+          <mat-option [value]="option">{{ option.label }}</mat-option>
+        }
+      </mat-autocomplete>
+      @if (managerCtrl.hasError('pickManager')) {
+        <mat-error>Pick a manager from the list, or clear the field</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button id="emp-cancel" mat-button type="button" (click)="cancel()">{{ conflict() ? 'Close' : 'Cancel' }}</button>
+  <button id="emp-submit" mat-flat-button color="primary" form="employee-form" type="submit"
+          [disabled]="form.invalid || managerCtrl.invalid || saving() || conflict()">
+    {{ saving() ? 'Saving...' : (employee ? 'Save changes' : 'Create employee') }}
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,26 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav mode="side" opened class="shell-nav">
+    <mat-nav-list>
+      @for (item of navItems; track item.route) {
+        <a mat-list-item [routerLink]="item.route" routerLinkActive="mat-mdc-list-item-active">
+          <mat-icon matListItemIcon [fontIcon]="item.icon" />
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <span>ACME Salary Management</span>
+      <span class="spacer"></span>
+      <button id="logout-btn" mat-icon-button (click)="logout()" aria-label="Logout">
+        <mat-icon fontIcon="logout" />
+      </button>
+    </mat-toolbar>
+
+    <div class="shell-content">
+      <router-outlet />
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

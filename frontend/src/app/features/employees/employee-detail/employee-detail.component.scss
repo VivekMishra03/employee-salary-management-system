@@ -1,0 +1,71 @@
+.centered {
+  display: flex;
+  justify-content: center;
+  padding: 64px;
+}
+
+.header-card {
+  margin-bottom: 24px;
+}
+
+.status-chip {
+  margin-left: auto;
+
+  &[data-status='ACTIVE'] {
+    background: #e6f4ea;
+    color: #1e6b34;
+  }
+
+  &[data-status='ON_LEAVE'] {
+    background: #fff4e0;
+    color: #8a5300;
+  }
+
+  &[data-status='TERMINATED'] {
+    background: #fdeaea;
+    color: #a12222;
+  }
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 12px 24px;
+  margin: 0;
+  padding: 24px 16px;
+
+  dt {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.muted {
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 0.875rem;
+}
+
+.salary-history {
+  width: 100%;
+}
+
+.superseded {
+  color: rgba(0, 0, 0, 0.5);
+  font-style: italic;
+}
+
+.superseded-tag {
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.08);
+  font-size: 0.75rem;
+}
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+}

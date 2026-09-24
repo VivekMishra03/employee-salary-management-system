@@ -1,0 +1,32 @@
+.employee-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.readonly-row {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 16px;
+}
+
+.readonly-label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.conflict-notice {
+  margin: 0 0 12px;
+  padding: 12px;
+  border-radius: 4px;
+  background: #fff4e0;
+  color: #8a5300;
+}

@@ -1,0 +1,60 @@
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.filter-search {
+  min-width: 240px;
+}
+
+.filter {
+  min-width: 140px;
+}
+
+table {
+  width: 100%;
+}
+
+.clickable-row {
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.no-data {
+  text-align: center;
+  padding: 32px;
+}
+
+.status-chip {
+  &[data-status='ACTIVE'] {
+    background: #e6f4ea;
+    color: #1e6b34;
+  }
+
+  &[data-status='ON_LEAVE'] {
+    background: #fff4e0;
+    color: #8a5300;
+  }
+
+  &[data-status='TERMINATED'] {
+    background: #fdeaea;
+    color: #a12222;
+  }
+}

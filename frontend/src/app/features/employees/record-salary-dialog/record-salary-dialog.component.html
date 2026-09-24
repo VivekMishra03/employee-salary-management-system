@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>Record salary change - {{ data.employeeName }}</h2>
+
+<mat-dialog-content>
+  <form id="salary-form" class="salary-form" [formGroup]="form" (ngSubmit)="submit()">
+
+    <p class="currency-hint">
+      The amount is recorded in the employee's local (location) currency. It is set automatically and cannot be chosen.
+    </p>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Effective from</mat-label>
+      <input id="sal-effective-from" matInput [matDatepicker]="dp" formControlName="effectiveFrom" />
+      <mat-datepicker-toggle matIconSuffix [for]="dp" />
+      <mat-datepicker #dp />
+      @if (form.controls.effectiveFrom.hasError('required')) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Base amount</mat-label>
+      <input id="sal-base-amount" matInput type="number" step="0.01" min="0.01" formControlName="baseAmount" />
+      @if (form.controls.baseAmount.hasError('required')) {
+        <mat-error>Required</mat-error>
+      } @else if (form.controls.baseAmount.hasError('min')) {
+        <mat-error>Must be greater than 0</mat-error>
+      } @else if (form.controls.baseAmount.hasError('twoDecimals')) {
+        <mat-error>At most 2 decimal places</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Pay frequency</mat-label>
+      <mat-select id="sal-frequency" formControlName="payFrequency">
+        @for (f of payFrequencies; track f) {
+          <mat-option [value]="f">{{ f }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Change reason</mat-label>
+      <mat-select id="sal-reason" formControlName="changeReason">
+        @for (r of changeReasons; track r) {
+          <mat-option [value]="r">{{ r }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.changeReason.hasError('required')) {
+        <mat-error>A reason is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Target bonus %</mat-label>
+      <input id="sal-bonus" matInput type="number" step="0.01" min="0" max="999.99" formControlName="targetBonusPct" />
+      @if (form.controls.targetBonusPct.hasError('min') || form.controls.targetBonusPct.hasError('max')) {
+        <mat-error>Between 0 and 999.99</mat-error>
+      } @else if (form.controls.targetBonusPct.hasError('twoDecimals')) {
+        <mat-error>At most 2 decimal places</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes (optional)</mat-label>
+      <textarea id="sal-notes" matInput formControlName="notes" rows="3" maxlength="2000"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button id="sal-cancel" mat-button (click)="cancel()">Cancel</button>
+  <button id="sal-submit" mat-raised-button color="primary" form="salary-form" type="submit"
+          [disabled]="form.invalid || saving()">
+    {{ saving() ? 'Saving...' : 'Record change' }}
+  </button>
+</mat-dialog-actions>

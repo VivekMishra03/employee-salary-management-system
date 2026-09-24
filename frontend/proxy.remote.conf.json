@@ -1,0 +1,8 @@
+{
+  "/api": {
+    "target": "https://employee-salary-management-system-qva3.onrender.com",
+    "secure": true,
+    "changeOrigin": true,
+    "logLevel": "warn"
+  }
+}

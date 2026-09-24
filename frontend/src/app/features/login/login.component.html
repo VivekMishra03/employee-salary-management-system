@@ -1,0 +1,40 @@
+<div class="login-page">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>ACME Salary Management</mat-card-title>
+      <mat-card-subtitle>HR Manager Sign In</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form id="login-form" class="login-form" [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input id="login-email" matInput type="email" formControlName="email" autocomplete="email" />
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>Email is required</mat-error>
+          } @else if (form.controls.email.hasError('email')) {
+            <mat-error>Enter a valid email</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input id="login-password" matInput type="password" formControlName="password" autocomplete="current-password" />
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      @if (loading()) {
+        <mat-spinner class="login-spinner" diameter="32" />
+      } @else {
+        <button id="login-submit" mat-raised-button color="primary" form="login-form" type="submit" [disabled]="form.invalid">
+          Sign In
+        </button>
+      }
+    </mat-card-actions>
+  </mat-card>
+</div>
