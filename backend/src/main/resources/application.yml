@@ -39,6 +39,11 @@ app:
     jwt:
       secret: ${JWT_SECRET:}
       expiry-minutes: ${JWT_EXPIRY_MINUTES:60}
+  # FR-4.5: a gender-gap group is suppressed unless BOTH compared genders have at least this many
+  # employees. The spec says only "a minimum size", so the number is a choice made here (ADR-0013);
+  # 5 is a common statistical-disclosure threshold. Validated >= 2 at startup. Not a secret.
+  analytics:
+    min-group-size: ${ANALYTICS_MIN_GROUP_SIZE:5}
   # requirements.md assumption 1: one configurable base reporting currency. Not a secret.
   compensation:
     base-currency: ${BASE_CURRENCY:USD}
