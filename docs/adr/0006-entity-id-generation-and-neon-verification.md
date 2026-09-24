@@ -86,11 +86,17 @@ Split the verification explicitly into two checkpoints:
 
 | Checkpoint | Where | Proves | Status |
 |---|---|---|---|
-| **M1** | Zonky embedded PostgreSQL 16.9 | The migration SQL is correct, and a gist `EXCLUDE` mixing `BIGINT` with `daterange` genuinely rejects overlapping intervals | **Done** — `SchemaMigrationTest` |
-| **M9** | The real Neon instance | Neon permits both extensions for our role, and V1 applies against it | **Open** |
+| **M1** | Zonky embedded PostgreSQL (17.5 as of ADR-0007) | The migration SQL is correct, and a gist `EXCLUDE` mixing `BIGINT` with `daterange` genuinely rejects overlapping intervals | **Done** — `SchemaMigrationTest` |
+| ~~M9~~ | The real Neon instance | Neon permits both extensions for our role, and V1 applies against it | **Done, ahead of schedule** — see [ADR-0007](0007-neon-verified-postgresql-18.md) |
 
-Until the M9 checkpoint passes, the §11 risk is **open**, and the documented fallback stays live:
-service-level enforcement plus a unique partial index on `(employee_id) WHERE effective_to IS NULL`.
+**Resolved 2026-09-21, earlier than planned:** the human provisioned Neon during M1 rather than M9,
+so this checkpoint was run then rather than waited on. All five migrations applied cleanly,
+including both extensions. The fallback below is retained as documentation of the path not taken,
+not as a live contingency — the primary approach succeeded.
+
+~~Until the M9 checkpoint passes, the §11 risk is open, and~~ the documented fallback below is no
+longer needed but is kept for the record: service-level enforcement plus a unique partial index on
+`(employee_id) WHERE effective_to IS NULL`.
 
 Test names and javadoc were narrowed to claim only what they prove — "V1 installs the extension on
 the test engine", not "btree_gist is available".

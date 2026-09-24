@@ -17,7 +17,7 @@ Read `requirements.md` before doing anything. It is the specification. This file
 | **Backend** | Java 17, Spring Boot 3.5.3, Gradle 8.5 wrapper (no Maven on this machine) |
 | **Database** | PostgreSQL 18 on Neon (free tier), Flyway migrations. Test engine pinned to 17.5 -- see ADR-0007 |
 | **Frontend** | Angular 21.2 (standalone components) + Angular Material |
-| **Tests** | JUnit 5 + AssertJ 3.27.3 + Mockito; Zonky embedded Postgres 16.9 for repository tests |
+| **Tests** | JUnit 5 + AssertJ 3.27.3 + Mockito; Zonky embedded Postgres 17.5 for repository/integration tests |
 | **Deploy** | Render (API) · Vercel (SPA) · Neon (DB) |
 | **Not available** | Docker, Maven, local psql — do not write instructions or tests that depend on them |
 
