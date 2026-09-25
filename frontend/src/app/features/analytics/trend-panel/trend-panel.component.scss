@@ -50,3 +50,15 @@ h3 {
     font-variant-numeric: tabular-nums;
   }
 }
+
+// The interval toggle and both date pickers take a row each on a phone.
+@container (max-width: 479px) {
+  .date {
+    flex: 1 1 100%;
+    width: 100%;
+  }
+
+  .trend {
+    font-size: 14px;
+  }
+}

@@ -68,6 +68,7 @@
   <mat-progress-bar mode="indeterminate" />
 }
 
+<div class="table-scroll" tabindex="0" role="region" aria-label="Employee directory table, scrolls horizontally">
 <table mat-table [dataSource]="employees()" matSort matSortActive="lastName" matSortDirection="asc"
        matSortDisableClear (matSortChange)="onSort($event)">
 
@@ -140,6 +141,7 @@
     <td class="no-data" [attr.colspan]="displayedColumns.length">No employees found.</td>
   </tr>
 </table>
+</div>
 
 <mat-paginator
   id="emp-paginator"

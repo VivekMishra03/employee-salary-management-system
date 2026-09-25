@@ -23,7 +23,7 @@
       @if (rows().length === 0) {
         <p class="panel-empty">No employees in this view</p>
       } @else {
-        <div class="scroll">
+        <div class="scroll table-scroll" tabindex="0" role="region" aria-label="Employees by pay band table, scrolls horizontally">
           <table class="employees">
             <thead>
               <tr>

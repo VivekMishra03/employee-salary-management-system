@@ -1,7 +1,9 @@
 // Shared by every dashboard panel: one card look, one way to show an error or an empty result.
 // Each panel sets --panel-accent on its host; the top border and the title icon both use it.
+// Each panel is its own container, so its layout follows the width it is given (Section 4, responsive web; FR-4), not the window.
 :host {
   display: block;
+  container-type: inline-size;
 }
 
 .panel {
@@ -36,4 +38,23 @@
   align-items: center;
   gap: 12px;
   margin: 8px 0 12px;
+}
+
+// A phone. Below 480px only: side by side on a desktop the dashboard gives each panel at least 480px, so a
+// panel this narrow is a phone (or a phone-sized window), never half of a desktop row.
+// Running text reaches 14px, and a toggle group becomes one full-width segmented control of 44px targets.
+@container (max-width: 479px) {
+  .panel-note,
+  .panel-empty {
+    font-size: 14px;
+  }
+
+  .panel-controls mat-button-toggle-group {
+    width: 100%;
+  }
+
+  .panel-controls mat-button-toggle {
+    flex: 1 1 0;
+    min-width: 0;
+  }
 }

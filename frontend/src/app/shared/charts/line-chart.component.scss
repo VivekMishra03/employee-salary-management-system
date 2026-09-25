@@ -48,3 +48,12 @@ svg {
   white-space: nowrap;
   border: 0;
 }
+
+// The drawing is scaled to the width it is given, so its text scales too. On a phone it is set larger, in the
+// drawing's own units, so that it is still about 10px when shown.
+@container (max-width: 479px) {
+  .y-label,
+  .x-label {
+    font-size: 20px;
+  }
+}

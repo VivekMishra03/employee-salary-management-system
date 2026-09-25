@@ -20,6 +20,7 @@
       <p class="panel-empty">No employees match these filters</p>
     } @else {
       <app-bar-chart [bars]="bars()" caption="Median annual base pay by group" />
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Pay comparison table, scrolls horizontally">
       <table class="groups">
         <thead>
           <tr><th scope="col">Group</th><th scope="col">Headcount</th><th scope="col">Median</th><th scope="col">Mean</th></tr>
@@ -35,6 +36,7 @@
           }
         </tbody>
       </table>
+      </div>
     }
   </mat-card-content>
 </mat-card>

@@ -1,8 +1,8 @@
 <mat-sidenav-container class="shell">
-  <mat-sidenav mode="side" opened class="shell-nav">
+  <mat-sidenav id="shell-nav" [mode]="handset() ? 'over' : 'side'" [opened]="navOpen()" (closedStart)="navOpen.set(false)" (keydown.escape)="onNavEscape()" (openedChange)="onNavOpenedChange($event)" class="shell-nav">
     <mat-nav-list>
       @for (item of navItems; track item.route) {
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="mat-mdc-list-item-active">
+        <a mat-list-item [routerLink]="item.route" routerLinkActive="mat-mdc-list-item-active" (click)="onNavigate()">
           <mat-icon matListItemIcon [fontIcon]="item.icon" />
           <span matListItemTitle>{{ item.label }}</span>
         </a>
@@ -12,14 +12,18 @@
 
   <mat-sidenav-content class="shell-main">
     <mat-toolbar class="shell-toolbar">
-      <span>ACME Salary Management</span>
+      <button id="nav-toggle" mat-icon-button type="button" (click)="toggleNav()"
+              aria-label="Toggle navigation menu" aria-controls="shell-nav" [attr.aria-expanded]="navOpen()">
+        <mat-icon fontIcon="menu" />
+      </button>
+      <span class="shell-title">ACME Salary Management</span>
       <span class="spacer"></span>
       <button id="logout-btn" mat-icon-button (click)="logout()" aria-label="Logout">
         <mat-icon fontIcon="logout" />
       </button>
     </mat-toolbar>
 
-    <div class="shell-content">
+    <div class="shell-content" [class.handset]="handset()">
       <router-outlet />
     </div>
   </mat-sidenav-content>

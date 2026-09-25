@@ -27,3 +27,9 @@
     color: var(--acme-text-muted);
   }
 }
+
+@container (max-width: 479px) {
+  .groups {
+    font-size: 14px;
+  }
+}

@@ -1,3 +1,10 @@
+// The dialog is its own container: it is 640px wide on a desktop and nearly the screen on a phone (styles.scss),
+// so the form follows the width it is given.
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
 .employee-form {
   display: flex;
   flex-direction: column;
@@ -7,7 +14,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -29,4 +36,27 @@
   border-radius: 4px;
   background: var(--acme-below-bg);
   color: var(--acme-below);
+}
+
+@container (max-width: 520px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .readonly-row {
+    flex-wrap: wrap;
+    gap: 12px 32px;
+  }
+
+  mat-dialog-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: stretch;
+
+    button {
+      min-height: 44px;
+      margin: 0;
+    }
+  }
 }

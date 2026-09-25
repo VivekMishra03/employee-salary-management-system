@@ -47,3 +47,13 @@
   font-size: 12px;
   color: var(--acme-text-muted);
 }
+
+@container (max-width: 479px) {
+  .gaps {
+    font-size: 14px;
+  }
+
+  .gap-words {
+    font-size: 14px;
+  }
+}

@@ -104,3 +104,61 @@ body { font-family: Roboto, "Helvetica Neue", sans-serif; color: var(--acme-text
     @include chip-tone(danger);
   }
 }
+
+// Responsive behaviour that has to live outside any one component (Section 4, responsive web).
+
+// A wide table scrolls inside its own box so that the page never scrolls sideways. On a desktop the table fits
+// and nothing scrolls.
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+// Dialogs render in the overlay, outside every component, so a window query is the only tool here. The width
+// is set inline by MatDialog config (640px, capped at 80vw), hence !important.
+@media (max-width: 599px) {
+  .cdk-overlay-pane.mat-mdc-dialog-panel {
+    width: calc(100vw - 16px) !important;
+    max-width: calc(100vw - 16px) !important;
+  }
+}
+
+// Material's paginator, inside any page or panel narrower than 640px: the page-size picker stays (it is the only
+// way to change page size on a phone), the row wraps instead of overflowing, and the controls are 44px.
+// Selectors are prefixed with .mat-mdc-paginator because Material's own component CSS has the same specificity as
+// a bare class and loads after this file, so an unprefixed rule silently loses.
+@container (max-width: 640px) {
+  .mat-mdc-paginator {
+    --mat-paginator-form-field-container-height: 44px;
+  }
+
+  .mat-mdc-paginator .mat-mdc-paginator-range-label {
+    margin: 0 8px;
+  }
+
+  .mat-mdc-paginator .mat-mdc-paginator-container {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .mat-mdc-paginator .mat-mdc-paginator-page-size {
+    align-items: center;
+    margin-right: 0;
+  }
+
+  .mat-mdc-paginator .mat-mdc-paginator-page-size-label {
+    font-size: 12px;
+  }
+}
+
+@container (max-width: 479px) {
+  .mat-button-toggle-button {
+    min-height: 44px;
+  }
+}
+
+// A sideways-scrolling box is a keyboard tab stop (tabindex="0" in the templates), so it needs a visible focus ring. The ring is inset because the box often fills a clipping parent (a tab body), which would cut an outer ring.
+.table-scroll:focus-visible {
+  outline: 2px solid var(--acme-link);
+  outline-offset: -2px;
+}

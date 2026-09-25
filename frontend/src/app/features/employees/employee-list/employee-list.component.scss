@@ -1,3 +1,10 @@
+// The page is its own container: layout follows the width it is given, not the window (Section 4, responsive web; FR-2.2), so it can be
+// measured in a spec and reused in any layout.
+:host {
+  display: block;
+  container-type: inline-size;
+}
+
 .list-header {
   display: flex;
   align-items: center;
@@ -54,4 +61,28 @@ table {
 .no-data {
   text-align: center;
   padding: 32px;
+}
+
+// A phone: the filter fields and the New employee button take a row each. The table scrolls inside its own box.
+@container (max-width: 640px) {
+  .list-header {
+    flex-wrap: wrap;
+    gap: 12px;
+
+    button {
+      flex: 1 1 100%;
+      min-height: 44px;
+    }
+  }
+
+  // The first column is the one a reader keys on, so on a phone it never breaks across lines.
+  .mat-column-employeeCode {
+    white-space: nowrap;
+  }
+
+  .filters > * {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: none;
+  }
 }

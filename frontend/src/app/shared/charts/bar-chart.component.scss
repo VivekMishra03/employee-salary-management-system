@@ -13,7 +13,7 @@
 
 .bar-row {
   display: grid;
-  grid-template-columns: minmax(80px, 180px) 1fr auto;
+  grid-template-columns: minmax(80px, 180px) minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   padding: 2px 0;
@@ -48,4 +48,10 @@
   clip-path: inset(50%);
   white-space: nowrap;
   border: 0;
+}
+
+@container (max-width: 479px) {
+  .bar-row {
+    font-size: 14px;
+  }
 }

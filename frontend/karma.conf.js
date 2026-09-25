@@ -39,7 +39,9 @@ module.exports = function (config) {
       // Used by CI, where Chrome runs as root in a container and has no usable sandbox.
       ChromeHeadlessCI: {
         base: 'ChromeHeadless',
-        flags: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage'],
+        // A fixed 1280px window: the app switches to its phone layout below 768px, and the shell specs must not depend on
+        // Chrome's default window size (800px), which sits just above that line.
+        flags: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage', '--window-size=1280,900'],
       },
     },
     restartOnFileChange: true,

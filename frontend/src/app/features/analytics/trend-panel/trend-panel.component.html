@@ -46,7 +46,7 @@
         <app-line-chart [points]="payrollPoints()" caption="Total annual payroll by period, in USD" />
         <h3>Average increase</h3>
         <app-line-chart class="increase" [points]="increasePoints()" [axisFormat]="formatPercent" caption="Average pay increase by period" />
-        <div class="scroll">
+        <div class="scroll table-scroll" tabindex="0" role="region" aria-label="Pay trend table, scrolls horizontally">
           <table class="trend">
             <thead>
               <tr>

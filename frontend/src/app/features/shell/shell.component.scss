@@ -1,9 +1,13 @@
 .shell {
   height: 100vh;
+  // A phone's 100vh includes the space its address bar covers; the dynamic unit is the visible height.
+  height: 100dvh;
 }
 
 .shell-nav {
   width: 220px;
+  // Never wider than the phone it slides over.
+  max-width: 85vw;
 }
 
 // This element is itself the scroll container and one viewport tall, so its own (scroll-attached)
@@ -17,6 +21,18 @@
 .shell-toolbar {
   background: var(--acme-toolbar-gradient);
   color: var(--acme-toolbar-text);
+
+  // Only the title may give way on a narrow screen: the menu and logout buttons keep their size.
+  button {
+    flex: none;
+  }
+}
+
+.shell-title {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .spacer {
@@ -25,4 +41,8 @@
 
 .shell-content {
   padding: 24px;
+
+  &.handset {
+    padding: 12px;
+  }
 }

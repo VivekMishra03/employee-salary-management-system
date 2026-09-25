@@ -90,6 +90,7 @@
     </mat-tab>
 
     <mat-tab label="Salary history">
+      <div class="table-scroll" tabindex="0" role="region" aria-label="Salary history table, scrolls horizontally">
       <table mat-table class="salary-history" [dataSource]="emp.salaryHistory">
         <ng-container matColumnDef="effectiveFrom">
           <th mat-header-cell *matHeaderCellDef>From</th>
@@ -152,6 +153,7 @@
           <td class="no-data" [attr.colspan]="salaryColumns.length">No salary history.</td>
         </tr>
       </table>
+      </div>
     </mat-tab>
   </mat-tab-group>
 }

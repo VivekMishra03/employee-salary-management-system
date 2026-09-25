@@ -48,3 +48,20 @@
     font-variant-numeric: tabular-nums;
   }
 }
+
+// Two figures to a row on a phone, one on the narrowest.
+@container (max-width: 479px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat dt {
+    font-size: 14px;
+  }
+}
+
+@container (max-width: 320px) {
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
