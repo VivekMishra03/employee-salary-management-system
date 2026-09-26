@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { BarChartComponent, BarDatum } from './bar-chart.component';
-import { asRgb, paletteVar } from '../../../testing/palette';
 
 describe('BarChartComponent', () => {
   let fixture: ComponentFixture<BarChartComponent>;
@@ -82,15 +81,5 @@ describe('BarChartComponent', () => {
 
     expect(bars(el).map(b => b.style.width)).toEqual(['0%', '100%']);
     expect(el.innerHTML).not.toContain('NaN');
-  });
-
-  // Look and feel: chart colours come from the palette in styles.scss, not from the component.
-  it('bars are filled with the blue-to-teal gradient from the palette', async () => {
-    const el = await render([{ label: 'A', value: 5, title: 'A' }]);
-    const fill = getComputedStyle(bars(el)[0]).backgroundImage;
-
-    expect(fill).toContain('linear-gradient');
-    expect(fill).toContain(asRgb(paletteVar('--acme-chart-from')));
-    expect(fill).toContain(asRgb(paletteVar('--acme-chart-to')));
   });
 });

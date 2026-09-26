@@ -6,7 +6,6 @@ import { provideRouter } from '@angular/router';
 import { PayBandsPanelComponent } from './pay-bands-panel.component';
 import { AnalyticsFilter } from '../../../core/models/analytics.model';
 import { payBandEmployee, payBandReport } from '../../../../testing/fixtures';
-import { asRgb, paletteVar } from '../../../../testing/palette';
 
 describe('PayBandsPanelComponent', () => {
   let fixture: ComponentFixture<PayBandsPanelComponent>;
@@ -251,27 +250,5 @@ describe('PayBandsPanelComponent', () => {
     await flush(payBandReport([payBandEmployee({ annualisedAmount: 60000, currencyCode: 'GBP' })]));
 
     expect(rows()[0][5]).toBe('60,000.00 GBP');
-  });
-
-  // Look and feel: colour only backs up the text label on each chip.
-  it('adherence chips use the semantic colours: below amber, within green, above blue, no band grey', async () => {
-    await open();
-    await flush(payBandReport(['BELOW', 'WITHIN', 'ABOVE', 'NO_BAND'].map((adherence, i) =>
-      payBandEmployee({ employeeId: i + 1, adherence: adherence as 'BELOW' })),
-    ));
-
-    const chips = Array.from(el().querySelectorAll<HTMLElement>('mat-chip.adherence-chip'));
-    const painted = chips.map(chip => [
-      chip.textContent?.trim(),
-      getComputedStyle(chip).backgroundColor,
-      getComputedStyle(chip.querySelector('.mdc-evolution-chip__text-label') as HTMLElement).color,
-    ]);
-    const pair = (name: string): string[] => [asRgb(paletteVar(`--acme-${name}-bg`)), asRgb(paletteVar(`--acme-${name}`))];
-    expect(painted).toEqual([
-      ['Below band', ...pair('below')],
-      ['Within band', ...pair('within')],
-      ['Above band', ...pair('above')],
-      ['No band', ...pair('no-band')],
-    ]);
   });
 });

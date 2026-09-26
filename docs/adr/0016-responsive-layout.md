@@ -50,3 +50,10 @@ layout. Angular 21 already drops the oldest browsers, so this is not a new restr
   font's metrics. The specs use whichever font the test Chrome resolves.
 - The dialog overlay's width rule has no spec of its own; the forms are tested at the widths of their hosts.
 - The layout has not been viewed by a person on a device. That review is the human's.
+
+## Addendum 2026-09-26: the layout tests were removed
+The "Testing" section above describes `expectNoHorizontalOverflow`, its helper tests and the per-screen responsive
+specs. ADR-0017 removed them: unit tests now check behaviour and wiring, not appearance. The decisions in this ADR
+(container queries, the 768 px shell breakpoint, scrolling tables, nothing hidden on phones) are unchanged, but
+they are no longer guarded by tests, so a layout regression is found by looking. The shell's phone and desktop
+drawer logic is still tested, because it is behaviour.

@@ -6,7 +6,6 @@ import { Router, provideRouter } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../core/services/auth.service';
-import { asRgb, paletteVar } from '../../../testing/palette';
 
 describe('LoginComponent', () => {
   let fixture: ComponentFixture<LoginComponent>;
@@ -72,15 +71,5 @@ describe('LoginComponent', () => {
     expect(router.navigate).not.toHaveBeenCalled();
     expect(TestBed.inject(AuthService).getToken()).toBeNull();
     expect(snack).toHaveBeenCalledWith('Invalid email or password.', 'Close', jasmine.anything());
-  });
-
-  // Look and feel: the sign-in page shares the blue-to-grey gradient of the rest of the app.
-  it('the sign-in page has a fixed blue-to-grey gradient background', () => {
-    const style = getComputedStyle(fixture.nativeElement.querySelector('.login-page') as HTMLElement);
-
-    expect(style.backgroundImage).toContain('linear-gradient');
-    expect(style.backgroundImage).toContain(asRgb(paletteVar('--acme-page-start')));
-    expect(style.backgroundImage).toContain(asRgb(paletteVar('--acme-page-end')));
-    expect(style.backgroundAttachment).toBe('fixed');
   });
 });

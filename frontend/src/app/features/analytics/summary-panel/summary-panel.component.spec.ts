@@ -5,7 +5,6 @@ import { provideZonelessChangeDetection } from '@angular/core';
 import { SummaryPanelComponent } from './summary-panel.component';
 import { AnalyticsFilter } from '../../../core/models/analytics.model';
 import { EMPTY_SUMMARY, summaryStats } from '../../../../testing/fixtures';
-import { asRgb, paletteVar } from '../../../../testing/palette';
 
 describe('SummaryPanelComponent', () => {
   let fixture: ComponentFixture<SummaryPanelComponent>;
@@ -128,21 +127,5 @@ describe('SummaryPanelComponent', () => {
 
     expect(older.cancelled).toBeTrue();
     expect(stat('headcount')).toBe('7');
-  });
-
-  // Look and feel: colour helps a reader scan, but every card keeps its text label and value.
-  it('the stat cards are colour-coded: headcount blue, payroll teal, mean and median violet, percentiles slate', async () => {
-    await open();
-    summaryRequest().flush(summaryStats());
-    await fixture.whenStable();
-
-    const tint = (name: string): string =>
-      getComputedStyle(el().querySelector(`[data-stat="${name}"]`) as HTMLElement).backgroundColor;
-    expect(tint('headcount')).toBe(asRgb(paletteVar('--acme-tint-blue')));
-    expect(tint('totalPayroll')).toBe(asRgb(paletteVar('--acme-tint-teal')));
-    expect(tint('mean')).toBe(asRgb(paletteVar('--acme-tint-violet')));
-    expect(tint('median')).toBe(asRgb(paletteVar('--acme-tint-violet')));
-    expect(tint('p25')).toBe(asRgb(paletteVar('--acme-tint-slate')));
-    expect(tint('p75')).toBe(asRgb(paletteVar('--acme-tint-slate')));
   });
 });

@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 
-// The palette, defined once. Component styles read these custom properties and never repeat a hex code, and
-// src/app/shared/theme/palette.spec.ts reads them back to prove every text/background pair meets WCAG AA.
+// The palette, defined once. Component styles read these custom properties and never repeat a hex code. Contrast
+// ratios quoted in the comments below are worked out by hand and are not checked by a test (ADR-0017).
 // Colour is only ever a second signal: chips, counts and captions keep their text.
 :root {
   // Ramps. Blue for the brand and the page, slate for greys and text.

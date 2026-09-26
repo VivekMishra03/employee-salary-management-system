@@ -9,8 +9,6 @@ import { of } from 'rxjs';
 import { EmployeeListComponent } from './employee-list.component';
 import { EmployeeFormDialogComponent } from '../employee-form-dialog/employee-form-dialog.component';
 import { DEPARTMENTS, JOB_ROLES, LOCATIONS, listItem, page } from '../../../../testing/fixtures';
-import { setHostWidth, textRightEdge } from '../../../../testing/layout';
-import { asRgb, paletteVar } from '../../../../testing/palette';
 
 describe('EmployeeListComponent', () => {
   let fixture: ComponentFixture<EmployeeListComponent>;
@@ -261,71 +259,5 @@ describe('EmployeeListComponent', () => {
 
     expect(open).toHaveBeenCalledWith(EmployeeFormDialogComponent, jasmine.objectContaining({ data: { employee: null } }));
     employeesRequest().flush(page([]));
-  });
-
-  it('FR-2.3: the search field is labelled "Search", shows the fields it covers as a placeholder, and names them for assistive technology', () => {
-    employeesRequest().flush(page([]));
-    const input = fixture.nativeElement.querySelector('#emp-search') as HTMLInputElement;
-
-    expect(fixture.nativeElement.querySelector('.filter-search mat-label').textContent.trim()).toBe('Search');
-    expect(input.placeholder).toBe('Name, code or email');
-    expect(input.getAttribute('aria-label')).toBe('Search by name, employee code or email');
-  });
-
-  describe('layout in a real browser', () => {
-    const searchField = (): HTMLElement => fixture.nativeElement.querySelector('.filter-search');
-    const icon = (): HTMLElement => searchField().querySelector('.mat-mdc-form-field-icon-suffix mat-icon') as HTMLElement;
-
-    for (const width of [1280, 360]) {
-      it(`FR-2.3: at ${width}px the search label ends before the search icon instead of running under it`, () => {
-        employeesRequest().flush(page([]));
-        setHostWidth(fixture, width);
-        const label = searchField().querySelector('label.mdc-floating-label') as HTMLElement;
-
-        expect(textRightEdge(label)).toBeLessThanOrEqual(icon().getBoundingClientRect().left);
-      });
-    }
-
-    it('FR-2.3: the search input padding and box sizing do not push its box under the search icon', () => {
-      employeesRequest().flush(page([]));
-      setHostWidth(fixture, 360);
-      const input = fixture.nativeElement.querySelector('#emp-search') as HTMLInputElement;
-
-      expect(input.getBoundingClientRect().right).toBeLessThanOrEqual(icon().getBoundingClientRect().left);
-    });
-
-    it('FR-2.3: a 60-character search overflows the input, is clipped with an ellipsis, and the clip edge stays clear of the search icon', () => {
-      employeesRequest().flush(page([]));
-      setHostWidth(fixture, 360);
-      const input = fixture.nativeElement.querySelector('#emp-search') as HTMLInputElement;
-      input.value = 'x'.repeat(60);
-      const style = getComputedStyle(input);
-      const clipEdge = input.getBoundingClientRect().right - parseFloat(style.paddingRight) - parseFloat(style.borderRightWidth);
-
-      expect(input.scrollWidth).toBeGreaterThan(input.clientWidth);
-      expect(style.textOverflow).toBe('ellipsis');
-      expect(icon().getBoundingClientRect().left - clipEdge).toBeGreaterThanOrEqual(8);
-    });
-  });
-
-  // Look and feel: the status chip keeps its text; colour only backs it up, in the same tones as pay-band adherence.
-  it('status chips use the palette: active green, on leave amber, terminated red', async () => {
-    employeesRequest().flush(page(['ACTIVE', 'ON_LEAVE', 'TERMINATED'].map((employmentStatus, i) =>
-      listItem({ id: i + 1, employmentStatus: employmentStatus as 'ACTIVE' })),
-    ));
-    await fixture.whenStable();
-
-    const chips = Array.from(fixture.nativeElement.querySelectorAll('mat-chip.status-chip')) as HTMLElement[];
-    const painted = chips.map(chip => [
-      chip.textContent?.trim(),
-      getComputedStyle(chip).backgroundColor,
-      getComputedStyle(chip.querySelector('.mdc-evolution-chip__text-label') as HTMLElement).color,
-    ]);
-    const pair = (name: string): string[] => [asRgb(paletteVar(`--acme-${name}-bg`)), asRgb(paletteVar(`--acme-${name}`))];
-    expect(painted).toEqual([
-      ['ACTIVE', ...pair('within')],
-      ['ON_LEAVE', ...pair('below')],
-      ['TERMINATED', ...pair('danger')],
-    ]);
   });
 });

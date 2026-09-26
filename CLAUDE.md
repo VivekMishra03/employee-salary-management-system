@@ -65,6 +65,12 @@ must not change.
   `recordRaise_whenEffectiveDateIsBeforeHireDate_isRejected()`.
 - **Assert on values, not on mock call counts,** wherever a value is available.
 - **Tests carry their requirement ID** in a `@DisplayName` or comment, e.g. `// FR-3.2`.
+- **Test behaviour and wiring, never appearance** (ADR-0017). A unit test fails only when behaviour or a
+  requirement breaks. Do not assert colours, gradients, spacing, sizes, geometry, computed CSS or icons. Do not
+  assert the wording of a static label **unless that text is itself a requirement** (for example the suppression
+  notice for a small group, or the exchange-rate date). A component test is fine when the template is the way to
+  drive or observe behaviour (a click sends a request, invalid input is refused, an error appears). Look-and-feel
+  changes are checked by looking at them and are not unit-tested.
 
 ### What must be unit-tested without a database
 Temporal salary transitions · currency normalisation and annualisation · rounding · compa-ratio ·

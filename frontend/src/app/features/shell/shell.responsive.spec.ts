@@ -6,7 +6,6 @@ import { MATERIAL_ANIMATIONS } from '@angular/material/core';
 import { provideRouter } from '@angular/router';
 import { BehaviorSubject, map } from 'rxjs';
 import { ShellComponent } from './shell.component';
-import { expectNoHorizontalOverflow, setHostWidth } from '../../../testing/layout';
 
 @Component({ template: '' })
 class BlankComponent {}
@@ -60,19 +59,6 @@ describe('ShellComponent on narrow and wide screens', () => {
       expect(sidenav().getBoundingClientRect().right).toBeLessThanOrEqual(0);
     });
 
-    it('the content is full width whether the drawer is closed or open', async () => {
-      const main = fixture.nativeElement.querySelector('.shell-main') as HTMLElement;
-      const container = fixture.nativeElement.querySelector('mat-sidenav-container') as HTMLElement;
-      expect(main.getBoundingClientRect().left).toBe(0);
-      expect(main.getBoundingClientRect().width).toBe(container.getBoundingClientRect().width);
-
-      toggle().click();
-      await settle();
-
-      expect(main.getBoundingClientRect().left).toBe(0);
-      expect(main.getBoundingClientRect().width).toBe(container.getBoundingClientRect().width);
-    });
-
     it('opening the drawer shows a backdrop, and clicking the backdrop closes it', async () => {
       expect(backdrop()?.classList.contains('mat-drawer-shown')).toBeFalsy();
 
@@ -96,39 +82,6 @@ describe('ShellComponent on narrow and wide screens', () => {
       await settle();
 
       expect(toggle().getAttribute('aria-expanded')).toBe('false');
-    });
-
-    it('navigation links are at least 44px tall', async () => {
-      toggle().click();
-      await settle();
-
-      for (const link of Array.from(sidenav().querySelectorAll('a'))) {
-        expect(link.getBoundingClientRect().height).toBeGreaterThanOrEqual(44);
-      }
-    });
-
-    it('content padding is 12px', () => {
-      expect(getComputedStyle(fixture.nativeElement.querySelector('.shell-content')).paddingLeft).toBe('12px');
-    });
-
-    it('at 360px nothing overflows and the logout button is reachable', () => {
-      const host = setHostWidth(fixture, 360);
-      const logout = fixture.nativeElement.querySelector('#logout-btn') as HTMLElement;
-
-      expectNoHorizontalOverflow(host);
-      expect(logout.getBoundingClientRect().right).toBeLessThanOrEqual(host.getBoundingClientRect().right);
-      expect(logout.getBoundingClientRect().left).toBeGreaterThanOrEqual(0);
-    });
-
-    it('at 280px the title is cut with an ellipsis and the logout button keeps its place', () => {
-      const host = setHostWidth(fixture, 280);
-      const title = fixture.nativeElement.querySelector('.shell-title') as HTMLElement;
-      const logout = fixture.nativeElement.querySelector('#logout-btn') as HTMLElement;
-
-      expect(getComputedStyle(title).textOverflow).toBe('ellipsis');
-      expect(title.scrollWidth).toBeGreaterThan(title.clientWidth);
-      expect(title.getBoundingClientRect().right).toBeLessThanOrEqual(logout.getBoundingClientRect().left);
-      expectNoHorizontalOverflow(host);
     });
 
     it('switching to a wide screen opens the drawer beside the content, and back closes it', async () => {
@@ -159,10 +112,6 @@ describe('ShellComponent on narrow and wide screens', () => {
       await settle();
 
       expect(toggle().getAttribute('aria-expanded')).toBe('true');
-    });
-
-    it('content padding is 24px', () => {
-      expect(getComputedStyle(fixture.nativeElement.querySelector('.shell-content')).paddingLeft).toBe('24px');
     });
   });
 });

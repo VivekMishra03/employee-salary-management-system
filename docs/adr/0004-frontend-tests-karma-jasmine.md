@@ -4,6 +4,8 @@
 - **Date:** 2026-09-20
 - **Supersedes:** [ADR-0003](0003-frontend-test-runner-vitest.md) (rejected)
 - **Decided by:** Manas Mishra (human)
+- **Amended in part by:** [ADR-0017](0017-frontend-tests-behaviour-not-appearance.md) (2026-09-26): the tests run in a real
+  browser as decided here, but they check behaviour and wiring, not layout, CSS or colour.
 
 ## Context
 

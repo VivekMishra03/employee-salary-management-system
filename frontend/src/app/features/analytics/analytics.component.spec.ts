@@ -11,7 +11,6 @@ import {
   DEPARTMENTS, EMPTY_SUMMARY, JOB_ROLES, LOCATIONS, buckets, genderGaps, groupStats, payBandReport, summaryStats,
   trendPoints,
 } from '../../../testing/fixtures';
-import { asRgb, paletteVar } from '../../../testing/palette';
 
 const ENDPOINTS = ['summary', 'by-group', 'distribution', 'pay-bands', 'gender-gap', 'trend'];
 
@@ -241,27 +240,5 @@ describe('AnalyticsComponent', () => {
       'app-pay-bands-panel', 'app-gender-gap-panel', 'app-trend-panel']) {
       expect(el().querySelector(tag)).withContext(tag).not.toBeNull();
     }
-  });
-
-  // Look and feel: six panels, six accents, none of them gendered.
-  it('each panel has its own accent on its top border and on its icon, and the gender panel is neutral slate', async () => {
-    answer(analyticsRequests());
-    await fixture.whenStable();
-
-    const ACCENTS = [
-      ['app-summary-panel', 'blue'], ['app-comparison-panel', 'teal'], ['app-distribution-panel', 'violet'],
-      ['app-pay-bands-panel', 'amber'], ['app-gender-gap-panel', 'slate'], ['app-trend-panel', 'cyan'],
-    ];
-    const painted = ACCENTS.map(([tag]) => {
-      const card = el().querySelector(`${tag} mat-card.panel`) as HTMLElement;
-      const icon = card.querySelector('mat-icon.panel-icon') as HTMLElement;
-      return [getComputedStyle(card).borderTopColor, getComputedStyle(icon).color];
-    });
-
-    expect(painted).toEqual(ACCENTS.map(([, accent]) => {
-      const colour = asRgb(paletteVar(`--acme-accent-${accent}`));
-      return [colour, colour];
-    }));
-    expect(new Set(painted.map(p => p[0])).size).toBe(6);
   });
 });

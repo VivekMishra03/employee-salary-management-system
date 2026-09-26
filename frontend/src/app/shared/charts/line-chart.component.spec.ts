@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { LineChartComponent, LinePoint } from './line-chart.component';
-import { asRgb, paletteVar } from '../../../testing/palette';
 
 describe('LineChartComponent', () => {
   let fixture: ComponentFixture<LineChartComponent>;
@@ -128,21 +127,5 @@ describe('LineChartComponent', () => {
       .map(r => Array.from(r.children).map(c => c.textContent?.trim()));
     expect(rows).toEqual([['a', '1.00'], ['b', '—'], ['c', '3.00']]);
     expect(el.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true');
-  });
-
-  // Look and feel: series colours come from the palette; a parent picks another series with --chart-series.
-  it('draws the line and its dots in the payroll series colour from the palette by default', async () => {
-    const el = await render([{ label: 'a', value: 1 }, { label: 'b', value: 2 }]);
-
-    expect(getComputedStyle(paths(el)[0]).stroke).toBe(asRgb(paletteVar('--acme-series-payroll')));
-    expect(getComputedStyle(dots(el)[0]).fill).toBe(asRgb(paletteVar('--acme-series-payroll')));
-  });
-
-  it('draws in whichever series colour its parent sets through --chart-series', async () => {
-    (fixture.nativeElement as HTMLElement).style.setProperty('--chart-series', 'var(--acme-series-increase)');
-    const el = await render([{ label: 'a', value: 1 }, { label: 'b', value: 2 }]);
-
-    expect(getComputedStyle(paths(el)[0]).stroke).toBe(asRgb(paletteVar('--acme-series-increase')));
-    expect(getComputedStyle(dots(el)[0]).fill).toBe(asRgb(paletteVar('--acme-series-increase')));
   });
 });
