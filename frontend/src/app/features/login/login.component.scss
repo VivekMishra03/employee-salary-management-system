@@ -1,4 +1,7 @@
 .login-page {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7,9 +10,66 @@
   background-size: cover;
 }
 
+// Colour for the glass to blur. A frosted card over a pale, even gradient looks like a plain white card, so two large
+// soft blobs of the brand blue and teal sit behind it. They are decoration only: pseudo-elements carry no content, take
+// no clicks, and are not read out.
+.login-page::before,
+.login-page::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+// The blobs overlap the card's top-left and bottom-right corners, which is where the blur is visible.
+.login-page::before {
+  width: clamp(260px, 44vmin, 500px);
+  height: clamp(260px, 44vmin, 500px);
+  top: calc(50% - 300px);
+  left: calc(50% - 340px);
+  background: var(--acme-blue-700);
+  // 0.45 keeps the field outline at about 3.2:1 where this blob sits behind the Email field (0.6 gave 3.0:1).
+  opacity: 0.45;
+}
+
+.login-page::after {
+  width: clamp(240px, 40vmin, 460px);
+  height: clamp(240px, 40vmin, 460px);
+  bottom: calc(50% - 300px);
+  right: calc(50% - 320px);
+  background: var(--acme-accent-teal);
+  opacity: 0.5;
+}
+
 .login-card {
+  --mat-card-subtitle-text-color: var(--acme-text-muted);
+
   width: min(380px, 100% - 32px);
   padding: 8px;
+  background: var(--acme-glass-bg);
+  border: 1px solid var(--acme-glass-border);
+  border-radius: 16px;
+  box-shadow: var(--acme-glass-shadow);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+
+// Without backdrop blur (an old browser) or when the user asks for less transparency, the card is nearly solid, so
+// nothing behind it can make the text harder to read.
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .login-card {
+    background: var(--acme-glass-bg-solid);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .login-card {
+    background: var(--acme-glass-bg-solid);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 .login-form {

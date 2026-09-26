@@ -21,10 +21,14 @@
   --acme-link: var(--acme-blue-700);
   --acme-border: var(--acme-slate-200);
 
-  // Page background (a soft blue fading to grey) and the deeper blue toolbar.
-  --acme-page-start: var(--acme-blue-200);
-  --acme-page-mid: var(--acme-slate-100);
-  --acme-page-end: var(--acme-slate-50);
+  // Page background: a soft blue fading to a cool grey, and the deeper blue toolbar. The data sits on white cards, so
+  // the page is a mid-light tone on purpose: the lightest stop is no paler than #dfe6ef, which keeps every white card
+  // at least 1.25:1 away from the page (the earlier #f3f5f8 end gave 1.09:1, so cards lost their edge there), while
+  // links and muted text placed straight on the page stay above 4.8:1 on every stop. Going darker than the start
+  // stop would push link contrast under AA.
+  --acme-page-start: #c2d7f2;
+  --acme-page-mid: #d3deec;
+  --acme-page-end: #dfe6ef;
   --acme-page-gradient: linear-gradient(135deg, var(--acme-page-start), var(--acme-page-mid) 55%, var(--acme-page-end));
   --acme-toolbar-start: var(--acme-blue-900);
   --acme-toolbar-end: var(--acme-blue-700);
@@ -64,9 +68,29 @@
   --acme-series-payroll: var(--acme-blue-700);
   --acme-series-increase: var(--acme-accent-amber);
 
-  // Angular Material cards stay solid white so text on them never depends on the gradient behind.
+  // Angular Material cards stay solid white so text on them never depends on the gradient behind. A two-layer blue-tinted
+  // shadow (a tight contact shadow plus a soft lift) is what separates a card from the page, more than its colour does.
   --mat-card-outlined-container-color: var(--acme-surface);
   --mat-card-elevated-container-color: var(--acme-surface);
+  --mat-card-elevated-container-elevation: 0 1px 2px rgba(13, 44, 90, 0.12), 0 6px 20px rgba(13, 44, 90, 0.1);
+
+  // Form fields: Material's default outline is a 38% black (about 2.7:1 on white, under the 3:1 a control's boundary
+  // needs) and its focus and caret colour is the theme's indigo. A steadier grey-blue outline (4.4:1 on white, 3.8:1 on
+  // the glass over the plain page and about 3.2:1 over the darkest blob) and the brand blue for hover, focus and caret make fields easier to find and tie them to the toolbar.
+  --acme-field-outline: #6e7a8b;
+  --mat-form-field-outlined-outline-color: var(--acme-field-outline);
+  --mat-form-field-outlined-hover-outline-color: var(--acme-text);
+  --mat-form-field-outlined-focus-outline-color: var(--acme-blue-700);
+  --mat-form-field-outlined-caret-color: var(--acme-blue-700);
+  --mat-form-field-outlined-label-text-color: var(--acme-text-muted);
+  --mat-form-field-outlined-focus-label-text-color: var(--acme-blue-700);
+
+  // The frosted-glass card on the sign-in page. Mostly white (66%) so muted text keeps about 5.5:1 over the darkest
+  // colour blurred behind it (worked out by hand, not measured); only the sign-in page uses it, because data screens stay on solid surfaces.
+  --acme-glass-bg: rgba(255, 255, 255, 0.66);
+  --acme-glass-bg-solid: rgba(255, 255, 255, 0.96);
+  --acme-glass-border: rgba(255, 255, 255, 0.7);
+  --acme-glass-shadow: 0 8px 32px rgba(13, 44, 90, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 // Material typography + reset
